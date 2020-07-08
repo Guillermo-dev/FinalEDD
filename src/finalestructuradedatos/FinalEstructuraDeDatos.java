@@ -33,14 +33,14 @@ public class FinalEstructuraDeDatos {
             respuesta = in.nextInt();
             switch (respuesta) {
                 case 1:
-                    System.out.println("Recorrer");
+                    System.out.print("Recottido Inorden arbolABB: ");
                     recorrerABB(arbolABB);
                     break;
                 case 2:
-                    System.out.println("Minimo");
+                    minimoABB(arbolABB);
                     break;
                 case 3:
-                    System.out.println("Maximo");
+                    maximoABB(arbolABB);
                     break;
                 case 4:
                     System.out.println("Buscar");
@@ -74,6 +74,29 @@ public class FinalEstructuraDeDatos {
         }
     }
 
+    public static void minimoABB(ArbolABB arbolABB) {
+        Nodo nodoActual = arbolABB.raiz;
+        System.out.println("El valor minimo del arbol ABB es: " + valorMinimo(nodoActual));
+    }
+
+    public static int valorMinimo(Nodo nodoActual) {
+        while (nodoActual.hi != null) {
+            nodoActual = nodoActual.hi;
+        }
+        return nodoActual.dato;
+    }
+
+    public static void maximoABB(ArbolABB arbolABB){
+        Nodo nodoActual = arbolABB.raiz;
+        System.out.println ("El valor maximo del arbol ABB es " + valorMaximo(nodoActual));
+    }
+    public static int valorMaximo (Nodo nodoActual){
+        while(nodoActual.hd != null){
+            nodoActual = nodoActual.hd;
+        }
+        return nodoActual.dato;
+    }
+    
     public static void insertarABB(ArbolABB arbol, int dato) {
         Nodo nodoActual = arbol.raiz;
         Nodo nuevoNodo = new Nodo();
