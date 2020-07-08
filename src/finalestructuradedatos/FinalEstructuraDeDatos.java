@@ -48,12 +48,14 @@ public class FinalEstructuraDeDatos {
                     busquedaABB(arbolABB, dato);
                     break;
                 case 5:
-                    System.out.println("Ingresar dato");
+                    System.out.println("Ingresar dato a agregar:");
                     dato = in.nextInt();
                     insertarABB(arbolABB, dato);
                     break;
                 case 6:
-                    System.out.println("Borrar");
+                    System.out.println("Ingresar dato a borrar:");
+                    dato = in.nextInt();
+                    borrarABB(arbolABB, dato);
                     break;
                 default:
                     System.out.println("Ingresar operacion valida");
@@ -77,27 +79,31 @@ public class FinalEstructuraDeDatos {
     }
 
     public static void minimoABB(ArbolABB arbolABB) {
-        Nodo nodoActual = arbolABB.raiz;
-        System.out.println("El valor minimo del arbol ABB es: " + valorMinimo(nodoActual));
+        Nodo nodoMinimo = valorMinimo(arbolABB.raiz);
+        System.out.println("El valor minimo del arbol ABB es: " + nodoMinimo.dato);
     }
 
-    public static int valorMinimo(Nodo nodoActual) {
-        while (nodoActual.hi != null) {
+    public static Nodo valorMinimo(Nodo nodoActual) {
+        if (nodoActual.hi == null) {
+            return nodoActual;
+        } else {
             nodoActual = nodoActual.hi;
+            return valorMinimo(nodoActual);
         }
-        return nodoActual.dato;
     }
 
     public static void maximoABB(ArbolABB arbolABB) {
-        Nodo nodoActual = arbolABB.raiz;
-        System.out.println("El valor maximo del arbol ABB es " + valorMaximo(nodoActual));
+        Nodo nodoMayor = valorMaximo(arbolABB.raiz);
+        System.out.println("El valor maximo del arbol ABB es " + nodoMayor.dato);
     }
 
-    public static int valorMaximo(Nodo nodoActual) {
-        while (nodoActual.hd != null) {
+    public static Nodo valorMaximo(Nodo nodoActual) {
+        if (nodoActual.hd == null) {
+            return nodoActual;
+        } else {
             nodoActual = nodoActual.hd;
+            return valorMaximo(nodoActual);
         }
-        return nodoActual.dato;
     }
 
     public static void busquedaABB(ArbolABB arbolABB, int dato) {
@@ -163,6 +169,75 @@ public class FinalEstructuraDeDatos {
                 return nodoActual;
             } else {
                 return espacioDisponibleABB(nodoActual.hd, dato);
+            }
+        }
+    }
+
+    public static void borrarABB(ArbolABB arbolABB, int dato) {
+        if (!seEncontro(arbolABB.raiz, dato)) {
+            System.out.println("El dato que desea eliminar no se encuentra en el arbol");
+        } else {
+            Nodo nodoAEliminar = busqueda(arbolABB.raiz, dato);
+            Nodo nodoPadre = busquedaPadre(arbolABB.raiz, dato);
+            eliminarNodo(nodoAEliminar, nodoPadre);
+            System.out.println("El nodo con la clave: " + dato + " se elimino con exito");
+        }
+
+    }
+
+    public static void eliminarNodo(Nodo nodoAEliminar, Nodo nodoPadre) {
+
+        if (nodoAEliminar.hi == null && nodoAEliminar.hd == null) {
+            if (nodoPadre.dato == nodoAEliminar.dato) {
+                nodoAEliminar.dato = 0;
+                // AGREGAR NULL EN VEZ DE 0
+            } else if (nodoPadre.dato >= nodoAEliminar.dato) {
+                nodoPadre.hi = null;
+            } else {
+                nodoPadre.hd = null;
+            }
+        } else {
+            if (nodoAEliminar.hi != null && nodoAEliminar.hd == null) {
+                if (nodoPadre.dato == nodoAEliminar.dato) {
+                    nodoPadre = nodoPadre.hi;
+                } else if (nodoPadre.dato > nodoAEliminar.dato) {
+                    nodoPadre.hi = nodoAEliminar.hi;
+                } else {
+                    nodoPadre.hd = nodoAEliminar.hi;
+                }
+            } else {
+                if (nodoAEliminar.hi == null && nodoAEliminar.hd != null) {
+                    if (nodoPadre.dato == nodoAEliminar.dato) {
+                        nodoPadre = nodoPadre.hd;
+                    } else if (nodoPadre.dato >= nodoAEliminar.dato) {
+                        nodoPadre.hi = nodoAEliminar.hd;
+                    } else {
+                        nodoPadre.hd = nodoAEliminar.hd;
+                    }
+                } else {
+                    Nodo nodoPredecesor = valorMinimo(nodoAEliminar);
+                    Nodo nodoPadrePredecesor = busquedaPadre(nodoAEliminar, nodoPredecesor.dato);
+                    nodoAEliminar.dato = nodoPredecesor.dato;
+                    eliminarNodo(nodoPredecesor, nodoPadrePredecesor);
+                }
+            }
+        }
+    }
+
+    public static Nodo busquedaPadre(Nodo nodoActual, int dato) {
+        if (nodoActual.dato == dato) {
+            return nodoActual;
+        } else {
+            if (nodoActual.hi.dato == dato || nodoActual.hd.dato == dato) {
+                return nodoActual;
+            } else {
+                if (nodoActual.dato > dato) {
+                    nodoActual = nodoActual.hi;
+                    return busquedaPadre(nodoActual, dato);
+                } else {
+                    nodoActual = nodoActual.hd;
+                    return busquedaPadre(nodoActual, dato);
+                }
             }
         }
     }
