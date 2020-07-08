@@ -43,7 +43,9 @@ public class FinalEstructuraDeDatos {
                     maximoABB(arbolABB);
                     break;
                 case 4:
-                    System.out.println("Buscar");
+                    System.out.println("Ingresar dato a buscar:");
+                    dato = in.nextInt();
+                    busquedaABB(arbolABB, dato);
                     break;
                 case 5:
                     System.out.println("Ingresar dato");
@@ -86,31 +88,67 @@ public class FinalEstructuraDeDatos {
         return nodoActual.dato;
     }
 
-    public static void maximoABB(ArbolABB arbolABB){
+    public static void maximoABB(ArbolABB arbolABB) {
         Nodo nodoActual = arbolABB.raiz;
-        System.out.println ("El valor maximo del arbol ABB es " + valorMaximo(nodoActual));
+        System.out.println("El valor maximo del arbol ABB es " + valorMaximo(nodoActual));
     }
-    public static int valorMaximo (Nodo nodoActual){
-        while(nodoActual.hd != null){
+
+    public static int valorMaximo(Nodo nodoActual) {
+        while (nodoActual.hd != null) {
             nodoActual = nodoActual.hd;
         }
         return nodoActual.dato;
     }
-    
-    public static void insertarABB(ArbolABB arbol, int dato) {
-        Nodo nodoActual = arbol.raiz;
-        Nodo nuevoNodo = new Nodo();
-        nuevoNodo.dato = dato;
-        if (arbol.raiz == null) {
-            arbol.raiz = nuevoNodo;
+
+    public static void busquedaABB(ArbolABB arbolABB, int dato) {
+        Nodo nodoActual = arbolABB.raiz;
+        if (seEncontro(nodoActual, dato)) {
+            System.out.println("El dato: " + dato + " se encuentra en el arbol");
         } else {
-            nodoActual = espacioDisponibleABB(nodoActual, dato);
+            System.out.println("El dato " + dato + " no se encuentra en el arbol");
+        }
+    }
+
+    public static boolean seEncontro(Nodo nodoActual, int dato) {
+        return (busqueda(nodoActual, dato) != null);
+    }
+
+    public static Nodo busqueda(Nodo nodoActual, int dato) {
+        if (nodoActual == null || nodoActual.dato == dato) {
+            return nodoActual;
+        } else {
             if (nodoActual.dato > dato) {
-                nodoActual.hi = nuevoNodo;
+                nodoActual = nodoActual.hi;
+                return busqueda(nodoActual, dato);
             } else {
-                nodoActual.hd = nuevoNodo;
+                nodoActual = nodoActual.hd;
+                return busqueda(nodoActual, dato);
             }
         }
+    }
+
+    public static void insertarABB(ArbolABB arbol, int dato) {
+        Nodo nodoActual = arbol.raiz;
+        if (noEsRepetido(nodoActual, dato)) {
+            Nodo nuevoNodo = new Nodo();
+            nuevoNodo.dato = dato;
+            if (arbol.raiz == null) {
+                arbol.raiz = nuevoNodo;
+            } else {
+                nodoActual = espacioDisponibleABB(nodoActual, dato);
+                if (nodoActual.dato > dato) {
+                    nodoActual.hi = nuevoNodo;
+                } else {
+                    nodoActual.hd = nuevoNodo;
+                }
+            }
+        } else {
+            System.out.println("Ese dato ya se encuentra en el arbol y los arboles ABB no permiten claves duplicadas");
+        }
+    }
+
+    public static boolean noEsRepetido(Nodo nodoActual, int dato) {
+        return !(seEncontro(nodoActual, dato));
     }
 
     public static Nodo espacioDisponibleABB(Nodo nodoActual, int dato) {
