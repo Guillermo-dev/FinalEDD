@@ -22,18 +22,19 @@ public class FinalEstructuraDeDatos {
         int respuesta;
         int dato;
         do {
-        System.out.println("1)Recorrer (inorden)\n"
-                + "2)Mostrar elemento minimo\n"
-                + "3)Mostrar elemento maximo\n"
-                + "4)Buscar elemento\n"
-                + "5)Insertar elemento\n"
-                + "6)Borrar elemento\n");
-        
-            System.out.println("Ingresar numero de operacion(7 para finalizar)");
+            System.out.println("1)Recorrer (inorden)\n"
+                    + "2)Mostrar elemento minimo\n"
+                    + "3)Mostrar elemento maximo\n"
+                    + "4)Buscar elemento\n"
+                    + "5)Insertar elemento\n"
+                    + "6)Borrar elemento\n");
+
+            System.out.println("Ingresar numero de operacion (7 para finalizar)");
             respuesta = in.nextInt();
             switch (respuesta) {
                 case 1:
                     System.out.println("Recorrer");
+                    recorrerABB(arbolABB);
                     break;
                 case 2:
                     System.out.println("Minimo");
@@ -58,41 +59,52 @@ public class FinalEstructuraDeDatos {
             }
         } while (respuesta != 7);
     }
-    
-    public static void insertarABB (ArbolABB arbol, int dato){
+
+    public static void recorrerABB(ArbolABB arbolABB) {
+        Nodo nodoActual = arbolABB.raiz;
+        recorridoInorden(nodoActual);
+        System.out.println("");
+    }
+
+    public static void recorridoInorden(Nodo nodoActual) {
+        if (nodoActual != null) {
+            recorridoInorden(nodoActual.hi);
+            System.out.print(nodoActual.dato + ", ");
+            recorridoInorden(nodoActual.hd);
+        }
+    }
+
+    public static void insertarABB(ArbolABB arbol, int dato) {
         Nodo nodoActual = arbol.raiz;
         Nodo nuevoNodo = new Nodo();
-            nuevoNodo.dato = dato;
-        if (arbol.raiz == null){
+        nuevoNodo.dato = dato;
+        if (arbol.raiz == null) {
             arbol.raiz = nuevoNodo;
-            System.out.println("se cargo en la raiz");
-        }else {
-            nodoActual = espacioDisponibleABB (nodoActual, dato);
-            if (nodoActual.dato > dato){
+        } else {
+            nodoActual = espacioDisponibleABB(nodoActual, dato);
+            if (nodoActual.dato > dato) {
                 nodoActual.hi = nuevoNodo;
-                 System.out.println("se cargo en hi");
-            }else{
+            } else {
                 nodoActual.hd = nuevoNodo;
-                 System.out.println("se cargo en hd");
             }
         }
     }
-    public static Nodo espacioDisponibleABB (Nodo nodoActual, int dato){
-        if (nodoActual.dato > dato){
-            if (nodoActual.hi == null){
+
+    public static Nodo espacioDisponibleABB(Nodo nodoActual, int dato) {
+        if (nodoActual.dato > dato) {
+            if (nodoActual.hi == null) {
                 return nodoActual;
-            }else{
-                return espacioDisponibleABB (nodoActual.hi, dato);
+            } else {
+                return espacioDisponibleABB(nodoActual.hi, dato);
             }
-        }else{
-            if (nodoActual.hd == null){
+        } else {
+            if (nodoActual.hd == null) {
                 return nodoActual;
-            }else{
+            } else {
                 return espacioDisponibleABB(nodoActual.hd, dato);
             }
         }
     }
-    
 
     public static void main(String[] args) {
         int respuesta;
