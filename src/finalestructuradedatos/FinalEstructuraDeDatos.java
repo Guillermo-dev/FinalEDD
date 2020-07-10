@@ -356,7 +356,7 @@ public class FinalEstructuraDeDatos {
                 calcularFE(arbolAVL.raiz);
                 if (estaDesvalanceado(arbolAVL.raiz)) {
                     hacerRotacion(arbolAVL, nodoPivote);
-                    System.out.println (nodoPivote.dato + " " );
+                    System.out.println(nodoPivote.dato + " ");
                 } else {
                     System.out.println("NO esta desvalanceado");
                 }
@@ -422,21 +422,36 @@ public class FinalEstructuraDeDatos {
         return false;
     }
 
-    public static void hacerRotacion(ArbolAVL arbolAVL ,Nodo nodoPivote) {
+    public static void hacerRotacion(ArbolAVL arbolAVL, Nodo nodoPivote) {
         Nodo hijoPivote;
+        Nodo padrePivote;
         if (nodoPivote.fe > 1 && nodoPivote.hd.fe == 1) {//RSI
             hijoPivote = nodoPivote.hd;
             nodoPivote.hd = hijoPivote.hi;
             hijoPivote.hi = nodoPivote;
-            if (arbolAVL.raiz == nodoPivote){
+            if (arbolAVL.raiz == nodoPivote) {
                 arbolAVL.raiz = hijoPivote;
+            } else {
+                padrePivote = busquedaPadre(arbolAVL.raiz, nodoPivote.dato);
+                if (padrePivote.hi == nodoPivote) {
+                    padrePivote.hi = hijoPivote;
+                } else {
+                    padrePivote.hd = hijoPivote;
+                }
             }
-        }else if (nodoPivote.fe < 1 && nodoPivote.hi.fe == -1){//RSD
+        } else if (nodoPivote.fe < 1 && nodoPivote.hi.fe == -1) {//RSD
             hijoPivote = nodoPivote.hi;
             nodoPivote.hi = hijoPivote.hd;
             hijoPivote.hd = nodoPivote;
-            if (arbolAVL.raiz == nodoPivote){
+            if (arbolAVL.raiz == nodoPivote) {
                 arbolAVL.raiz = hijoPivote;
+            } else {
+                padrePivote = busquedaPadre(arbolAVL.raiz, nodoPivote.dato);
+                if (padrePivote.hi == nodoPivote) {
+                    padrePivote.hi = hijoPivote;
+                } else {
+                    padrePivote.hd = hijoPivote;
+                }
             }
         }
     }
