@@ -353,11 +353,14 @@ public class FinalEstructuraDeDatos {
                     nodoActual.hd = nuevoNodo;
                 }
                 Nodo nodoPivote = buscarNodoPivote(arbolAVL.raiz, nuevoNodo.dato);
-                if (nodoPivote.fe != 0) {
-                    calcularFE(arbolAVL.raiz);
-                }else{
-                    calcularFE(arbolAVL.raiz);
+                calcularFE(arbolAVL.raiz);
+                if (estaDesvalanceado(arbolAVL.raiz)) {
+                    hacerRotacion(arbolAVL, nodoPivote);
+                    System.out.println (nodoPivote.dato + " " );
+                } else {
+                    System.out.println("NO esta desvalanceado");
                 }
+
             }
         } else {
             System.out.println("Ese dato ya se encuentra en el arbol y los arboles ABB no permiten claves duplicadas");
@@ -380,7 +383,7 @@ public class FinalEstructuraDeDatos {
             calcularFE(nodoActual.hi);
             System.out.print(nodoActual.dato + ", ");
             nodoActual.fe = calcularAltura(nodoActual.hd) - calcularAltura(nodoActual.hi);
-            System.out.println("FE:"+ nodoActual.fe);
+            System.out.println("FE:" + nodoActual.fe);
             calcularFE(nodoActual.hd);
         }
     }
@@ -401,6 +404,39 @@ public class FinalEstructuraDeDatos {
                 return calcularAltura(nodoActual.hd) + 1;
             } else {
                 return 1;
+            }
+        }
+    }
+
+    public static boolean estaDesvalanceado(Nodo nodoActual) {
+        if (nodoActual != null) {
+            estaDesvalanceado(nodoActual.hi);
+            if (nodoActual.fe < -1 || nodoActual.fe > 1) {
+                return true;
+            }
+            estaDesvalanceado(nodoActual.hd);
+            if (nodoActual.fe < -1 || nodoActual.fe > 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void hacerRotacion(ArbolAVL arbolAVL ,Nodo nodoPivote) {
+        Nodo hijoPivote;
+        if (nodoPivote.fe > 1 && nodoPivote.hd.fe == 1) {//RSI
+            hijoPivote = nodoPivote.hd;
+            nodoPivote.hd = hijoPivote.hi;
+            hijoPivote.hi = nodoPivote;
+            if (arbolAVL.raiz == nodoPivote){
+                arbolAVL.raiz = hijoPivote;
+            }
+        }else if (nodoPivote.fe < 1 && nodoPivote.hi.fe == -1){//RSD
+            hijoPivote = nodoPivote.hi;
+            nodoPivote.hi = hijoPivote.hd;
+            hijoPivote.hd = nodoPivote;
+            if (arbolAVL.raiz == nodoPivote){
+                arbolAVL.raiz = hijoPivote;
             }
         }
     }
