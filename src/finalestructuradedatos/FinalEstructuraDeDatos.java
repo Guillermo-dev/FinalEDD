@@ -6,6 +6,11 @@ public class FinalEstructuraDeDatos {
 
     public static Scanner in = new Scanner(System.in);
 
+    static class Bool {
+
+        public boolean desbalanceado;
+    }
+
     public static void menu() {
         System.out.println("=======================ARBOLES=======================\n"
                 + "1)ABB (enteros)\n"
@@ -339,6 +344,7 @@ public class FinalEstructuraDeDatos {
 
     public static void insertarAVL(ArbolAVL arbolAVL, int dato) {
         Nodo nodoActual = arbolAVL.raiz;
+        Bool estado = new Bool();
         if (noEsRepetido(nodoActual, dato)) {
             Nodo nuevoNodo = new Nodo();
             nuevoNodo.dato = dato;
@@ -353,17 +359,26 @@ public class FinalEstructuraDeDatos {
                     nodoActual.hd = nuevoNodo;
                 }
                 Nodo nodoPivote = buscarNodoPivote(arbolAVL.raiz, nuevoNodo.dato);
-                calcularFE(arbolAVL.raiz);
-                if (estaDesvalanceado(arbolAVL.raiz)) {
-                    hacerRotacion(arbolAVL, nodoPivote);
-                    System.out.println(nodoPivote.dato + " ");
-                } else {
-                    System.out.println("NO esta desvalanceado");
-                }
+                balanceo(arbolAVL, nodoPivote, estado);
 
             }
         } else {
             System.out.println("Ese dato ya se encuentra en el arbol y los arboles ABB no permiten claves duplicadas");
+        }
+    }
+
+    public static void balanceo(ArbolAVL arbolAVL, Nodo nodoPivote, Bool estado) {
+
+        System.out.println("Pivote: " + nodoPivote.dato + " ");
+        calcularFE(arbolAVL.raiz);
+        System.out.println("RAIZ:" + arbolAVL.raiz.dato);
+        estaDesvalanceado(arbolAVL.raiz, estado);
+        if (estado.desbalanceado) {
+            hacerRotacion(arbolAVL, nodoPivote);
+            calcularFE(arbolAVL.raiz);
+            System.out.println("RAIZ:" + arbolAVL.raiz.dato);
+        } else {
+            System.out.println("NO esta desbalanceado");
         }
     }
 
@@ -408,56 +423,90 @@ public class FinalEstructuraDeDatos {
         }
     }
 
-    public static boolean estaDesvalanceado(Nodo nodoActual) {
+    public static void estaDesvalanceado(Nodo nodoActual, Bool estado) {
         if (nodoActual != null) {
-            estaDesvalanceado(nodoActual.hi);
             if (nodoActual.fe < -1 || nodoActual.fe > 1) {
-                return true;
+                estado.desbalanceado = true;
             }
-            estaDesvalanceado(nodoActual.hd);
-            if (nodoActual.fe < -1 || nodoActual.fe > 1) {
-                return true;
-            }
+            estaDesvalanceado(nodoActual.hi, estado);
+            estaDesvalanceado(nodoActual.hd, estado);
         }
-        return false;
     }
 
     public static void hacerRotacion(ArbolAVL arbolAVL, Nodo nodoPivote) {
+        if (nodoPivote.fe > 1 && nodoPivote.hd.fe >= 0) {//RSI
+            rsi(arbolAVL, nodoPivote);
+            System.out.println("RSI");
+        } else if (nodoPivote.fe < 1 && nodoPivote.hi.fe <= 0) {//RSD
+            rsd(arbolAVL, nodoPivote);
+            System.out.println("RSD");
+        } else if (nodoPivote.fe < 1 && nodoPivote.hi.fe >= 1) {
+            rsi(arbolAVL, nodoPivote.hi);
+            rsd(arbolAVL, nodoPivote);
+            System.out.println("RDI");
+        } else if (nodoPivote.fe > 1 && nodoPivote.hd.fe <= 1) {
+            rsd(arbolAVL, nodoPivote.hd);
+            rsi(arbolAVL, nodoPivote);
+            System.out.println("RDD");
+        }
+    }
+
+    public static void rsi(ArbolAVL arbolAVL, Nodo nodoPivote) {
         Nodo hijoPivote;
         Nodo padrePivote;
-        if (nodoPivote.fe > 1 && nodoPivote.hd.fe == 1) {//RSI
-            hijoPivote = nodoPivote.hd;
-            nodoPivote.hd = hijoPivote.hi;
-            hijoPivote.hi = nodoPivote;
-            if (arbolAVL.raiz == nodoPivote) {
-                arbolAVL.raiz = hijoPivote;
+
+        hijoPivote = nodoPivote.hd;
+        nodoPivote.hd = hijoPivote.hi;
+        hijoPivote.hi = nodoPivote;
+        if (arbolAVL.raiz == nodoPivote) {
+            arbolAVL.raiz = hijoPivote;
+        } else {
+            padrePivote = busquedaPadre(arbolAVL.raiz, nodoPivote.dato);
+            if (padrePivote.hi == nodoPivote) {
+                padrePivote.hi = hijoPivote;
             } else {
-                padrePivote = busquedaPadre(arbolAVL.raiz, nodoPivote.dato);
-                if (padrePivote.hi == nodoPivote) {
-                    padrePivote.hi = hijoPivote;
-                } else {
-                    padrePivote.hd = hijoPivote;
-                }
+                padrePivote.hd = hijoPivote;
             }
-        } else if (nodoPivote.fe < 1 && nodoPivote.hi.fe == -1) {//RSD
-            hijoPivote = nodoPivote.hi;
-            nodoPivote.hi = hijoPivote.hd;
-            hijoPivote.hd = nodoPivote;
-            if (arbolAVL.raiz == nodoPivote) {
-                arbolAVL.raiz = hijoPivote;
+        }
+
+    }
+
+    public static void rsd(ArbolAVL arbolAVL, Nodo nodoPivote) {
+        Nodo hijoPivote;
+        Nodo padrePivote;
+
+        hijoPivote = nodoPivote.hi;
+        nodoPivote.hi = hijoPivote.hd;
+        hijoPivote.hd = nodoPivote;
+        if (arbolAVL.raiz == nodoPivote) {
+            arbolAVL.raiz = hijoPivote;
+        } else {
+            padrePivote = busquedaPadre(arbolAVL.raiz, nodoPivote.dato);
+            if (padrePivote.hi == nodoPivote) {
+                padrePivote.hi = hijoPivote;
             } else {
-                padrePivote = busquedaPadre(arbolAVL.raiz, nodoPivote.dato);
-                if (padrePivote.hi == nodoPivote) {
-                    padrePivote.hi = hijoPivote;
-                } else {
-                    padrePivote.hd = hijoPivote;
-                }
+                padrePivote.hd = hijoPivote;
             }
         }
     }
 
     public static void borrarAVL(ArbolAVL arbolAVL, int dato) {
-
+        Bool estado = new Bool();
+        if (!seEncontro(arbolAVL.raiz, dato)) {
+            System.out.println("El dato que desea eliminar no se encuentra en el arbol");
+        } else {
+            Nodo nodoAEliminar = busqueda(arbolAVL.raiz, dato);
+            Nodo nodoPadre = busquedaPadre(arbolAVL.raiz, dato);
+            Nodo nodoPivote = buscarNodoPivote(arbolAVL.raiz, nodoAEliminar.dato);
+            if (nodoAEliminar == nodoPadre && nodoAEliminar.hi == null && nodoAEliminar.hd == null) {
+                arbolAVL.raiz = null;
+                System.out.println("El nodo con la clave: " + dato + " se elimino con exito");
+            } else {
+                eliminarNodo(nodoAEliminar, nodoPadre);
+                System.out.println("El nodo con la clave: " + dato + " se elimino con exito");
+            }
+            balanceo(arbolAVL,nodoPivote,estado);
+        }
     }
 
     public static void operacionesArbolB() {
