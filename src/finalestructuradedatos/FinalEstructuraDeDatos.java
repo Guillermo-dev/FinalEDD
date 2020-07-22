@@ -131,7 +131,7 @@ public class FinalEstructuraDeDatos {
         if (seEncontro(nodoActual, dato)) {
             System.out.println("El dato: " + dato + " se encuentra en el arbol");
         } else {
-            System.out.println("El dato " + dato + " no se encuentra en el arbol");
+            System.out.println("El dato " + dato + " NO se encuentra en el arbol");
         }
     }
 
@@ -161,7 +161,7 @@ public class FinalEstructuraDeDatos {
             if (arbolABB.raiz == null) {
                 arbolABB.raiz = nuevoNodo;
             } else {
-                nodoActual = espacioDisponibleABB(nodoActual, dato);
+                nodoActual = buscarPadreNuevoNodo(nodoActual, dato);
                 if (nodoActual.dato > dato) {
                     nodoActual.hi = nuevoNodo;
                 } else {
@@ -169,7 +169,7 @@ public class FinalEstructuraDeDatos {
                 }
             }
         } else {
-            System.out.println("Ese dato ya se encuentra en el arbol y los arboles ABB no permiten claves duplicadas");
+            System.out.println("El dato (" + dato + ") ya se encuentra en el arbol y los arboles ABB no permiten claves duplicadas");
         }
     }
 
@@ -177,18 +177,18 @@ public class FinalEstructuraDeDatos {
         return !(seEncontro(nodoActual, dato));
     }
 
-    public static Nodo espacioDisponibleABB(Nodo nodoActual, int dato) {
+    public static Nodo buscarPadreNuevoNodo(Nodo nodoActual, int dato) {
         if (nodoActual.dato > dato) {
             if (nodoActual.hi == null) {
                 return nodoActual;
             } else {
-                return espacioDisponibleABB(nodoActual.hi, dato);
+                return buscarPadreNuevoNodo(nodoActual.hi, dato);
             }
         } else {
             if (nodoActual.hd == null) {
                 return nodoActual;
             } else {
-                return espacioDisponibleABB(nodoActual.hd, dato);
+                return buscarPadreNuevoNodo(nodoActual.hd, dato);
             }
         }
     }
@@ -338,7 +338,7 @@ public class FinalEstructuraDeDatos {
         if (seEncontro(nodoActual, dato)) {
             System.out.println("El dato: " + dato + " se encuentra en el arbol");
         } else {
-            System.out.println("El dato " + dato + " no se encuentra en el arbol");
+            System.out.println("El dato " + dato + " NO se encuentra en el arbol");
         }
     }
 
@@ -352,7 +352,7 @@ public class FinalEstructuraDeDatos {
                 arbolAVL.raiz = nuevoNodo;
                 arbolAVL.raiz.fe = 0;
             } else {
-                nodoActual = espacioDisponibleABB(nodoActual, dato);
+                nodoActual = buscarPadreNuevoNodo(nodoActual, dato);
                 if (nodoActual.dato > dato) {
                     nodoActual.hi = nuevoNodo;
                 } else {
@@ -363,7 +363,7 @@ public class FinalEstructuraDeDatos {
 
             }
         } else {
-            System.out.println("Ese dato ya se encuentra en el arbol y los arboles ABB no permiten claves duplicadas");
+            System.out.println("Ese dato (" + dato + ") ya se encuentra en el arbol y los arboles AVL no permiten claves duplicadas");
         }
     }
 
@@ -434,10 +434,10 @@ public class FinalEstructuraDeDatos {
     }
 
     public static void hacerRotacion(ArbolAVL arbolAVL, Nodo nodoPivote) {
-        if (nodoPivote.fe > 1 && nodoPivote.hd.fe >= 0) {//RSI
+        if (nodoPivote.fe > 1 && nodoPivote.hd.fe >= 0) {//">=0" para cuadno elimina
             rsi(arbolAVL, nodoPivote);
             System.out.println("RSI");
-        } else if (nodoPivote.fe < 1 && nodoPivote.hi.fe <= 0) {//RSD
+        } else if (nodoPivote.fe < 1 && nodoPivote.hi.fe <= 0) {//"<=0" para cuadno elimina
             rsd(arbolAVL, nodoPivote);
             System.out.println("RSD");
         } else if (nodoPivote.fe < 1 && nodoPivote.hi.fe >= 1) {
@@ -505,11 +505,286 @@ public class FinalEstructuraDeDatos {
                 eliminarNodo(nodoAEliminar, nodoPadre);
                 System.out.println("El nodo con la clave: " + dato + " se elimino con exito");
             }
-            balanceo(arbolAVL,nodoPivote,estado);
+            balanceo(arbolAVL, nodoPivote, estado);
         }
     }
 
-    public static void operacionesArbolB() {
+    public static void operacionesArbolB(ArbolB arbolB) {
+        int respuesta;
+        int dato;
+        do {
+            menuArboles();
+            System.out.println("Ingresar numero de operacion (7 para finalizar)");
+            respuesta = in.nextInt();
+            switch (respuesta) {
+                case 1:
+                    recorrerB(arbolB);
+                    break;
+                case 2:
+                    minimoB(arbolB);
+                    break;
+                case 3:
+                    maximoB(arbolB);
+                    break;
+                case 4:
+                    System.out.println("Ingresar dato a buscar:");
+                    dato = in.nextInt();
+                    busquedaB(arbolB, dato);
+                    break;
+                case 5:
+                    System.out.println("Ingresar dato a agregar:");
+                    dato = in.nextInt();
+                    insertarB(arbolB, dato);
+                    break;
+                case 6:
+                    System.out.println("Ingresar dato a borrar:");
+                    dato = in.nextInt();
+                    borrarB(arbolB, dato);
+                    break;
+                default:
+                    System.out.println("Ingresar operacion valida");
+
+            }
+        } while (respuesta != 7);
+    }
+
+    public static void recorrerB(ArbolB arbolB) {
+        if (arbolB.raiz == null) {
+            System.out.println("El arbol esta vacio");
+        } else {
+            NodoB nodoActual = arbolB.raiz;
+            System.out.print("Recorrido Inorden arbolB: ");
+            recorridoInordenB(nodoActual);
+            System.out.println("");
+        }
+    }
+
+    public static void recorridoInordenB(NodoB nodoActual) {
+        if (nodoActual != null) {
+            recorridoInordenB(nodoActual.hijos[0]);
+            int i = 0;
+            int j = 0;
+            while (nodoActual.datos[i] != null) {
+                System.out.print(nodoActual.datos[i].dato + ", ");
+                if (nodoActual.hijos[j + 1] != null) {
+                    recorridoInordenB(nodoActual.hijos[j + 1]);
+                    j++;
+                }
+                i++;
+            }
+
+        }
+    }
+
+    public static void minimoB(ArbolB arbolB) {
+        if (arbolB.raiz == null) {
+            System.out.println("El arbol esta vacio");
+        } else {
+            NodoB nodoMinimo = valorMinimoB(arbolB.raiz);
+            System.out.println("El valor minimo del arbol B es: " + nodoMinimo.datos[0].dato);
+        }
+    }
+
+    public static NodoB valorMinimoB(NodoB nodoActual) {
+        if (nodoActual.hijos[0] == null) {
+            return nodoActual;
+        } else {
+            nodoActual = nodoActual.hijos[0];
+            return valorMinimoB(nodoActual);
+        }
+    }
+
+    public static void maximoB(ArbolB arbolB) {
+        if (arbolB.raiz == null) {
+            System.out.println("El arbol esta vacio");
+        } else {
+            NodoB nodoMaximo = valorMaximoB(arbolB.raiz);
+            int i = 0;
+            while (nodoMaximo.datos[i + 1] != null) {
+                i++;
+            }
+            System.out.println("El valor maximo del arbol B es: " + nodoMaximo.datos[i].dato);
+        }
+    }
+
+    public static NodoB valorMaximoB(NodoB nodoActual) {
+        for (int i = 4; i > 0; i--) {
+            if (nodoActual.hijos[i] != null) {
+                return valorMaximoB(nodoActual.hijos[i]);
+            }
+        }
+        return nodoActual;
+    }
+
+    public static void busquedaB(ArbolB arbolB, int dato) {
+        NodoB nodoActual = arbolB.raiz;
+        if (seEncontroB(nodoActual, dato)) {
+            System.out.println("El dato " + dato + " se encuentra en el arbol");
+        } else {
+            System.out.println("El dato " + dato + " NO se encuentra en el arbol");
+        }
+    }
+
+    public static boolean seEncontroB(NodoB nodoActual, int dato) {
+        return (busquedaB(nodoActual, dato) != null);
+    }
+
+    public static NodoB busquedaB(NodoB nodoActual, int dato) {
+        if (nodoActual == null) {
+            return nodoActual;
+        }
+        int i = 0;
+        while (nodoActual.datos[i] != null) {
+            if (nodoActual.datos[i].dato == dato) {
+                return nodoActual;
+            }
+            i++;
+        }
+        i = 0;
+        while (nodoActual.datos[i] != null) {
+            if (nodoActual.datos[i].dato > dato) {
+                return busquedaB(nodoActual.hijos[i], dato);
+            }
+            i++;
+        }
+        return busquedaB(nodoActual.hijos[i], dato);
+    }
+
+    public static void insertarB(ArbolB arbolB, int dato) {
+        NodoB nodoActual = arbolB.raiz;
+        if (arbolB.raiz == null) {
+            NodoB nuevoNodo = new NodoB();
+            nuevoNodo.datos[0] = new Dato();
+            nuevoNodo.datos[0].dato = dato;
+            arbolB.raiz = nuevoNodo;
+        } else {
+            if (noEsRepetidoB(nodoActual, dato)) {
+                nodoActual = buscarNodoParaInsertar(nodoActual, dato);
+                insertarEnNodo(nodoActual, dato);
+                if (nodoLleno(nodoActual.datos)) {
+                    solucionarOverflow(arbolB, nodoActual, null);
+                }
+            } else {
+                System.out.println("El dato (" + dato + ") ya se encuentra en el arbol y los arboles B no permiten claves duplicadas");
+            }
+        }
+    }
+
+    public static boolean noEsRepetidoB(NodoB nodoRaiz, int dato) {
+        return !(seEncontroB(nodoRaiz, dato));
+    }
+
+    public static NodoB buscarNodoParaInsertar(NodoB nodoActual, int dato) {
+        if (nodoActual.hijos[0] != null) {
+            int i = 0;
+            while (nodoActual.datos[i] != null) {
+                if (nodoActual.datos[i].dato > dato) {
+                    nodoActual = nodoActual.hijos[i];
+                    return buscarNodoParaInsertar(nodoActual, dato);
+                }
+                i++;
+            }
+            return buscarNodoParaInsertar(nodoActual.hijos[i], dato);
+        }
+
+        return nodoActual;
+    }
+
+    public static void insertarEnNodo(NodoB nodoActual, int dato) {
+        int i = 0;
+        while (nodoActual.datos[i] != null) {
+            i++;
+        }
+        nodoActual.datos[i] = new Dato();
+        nodoActual.datos[i].dato = dato;
+        while (i > 0) {
+            if (nodoActual.datos[i].dato < nodoActual.datos[i - 1].dato) {
+                int aux = nodoActual.datos[i - 1].dato;
+                nodoActual.datos[i - 1].dato = nodoActual.datos[i].dato;
+                nodoActual.datos[i].dato = aux;
+            }
+            i--;
+        }
+    }
+
+    public static boolean nodoLleno(Dato[] datos) {
+        return (datos[4] != null);
+    }
+
+    public static void solucionarOverflow(ArbolB arbolB, NodoB nodoActual, NodoB nodoAux) {
+        NodoB nuevoNodo = new NodoB();
+        nuevoNodo.datos[0] = new Dato();
+        nuevoNodo.datos[0].dato = nodoActual.datos[3].dato;
+        nuevoNodo.datos[1] = new Dato();
+        nuevoNodo.datos[1].dato = nodoActual.datos[4].dato;
+        nodoActual.datos[3] = null;
+        nodoActual.datos[4] = null;
+        nuevoNodo.hijos[0] = nodoActual.hijos[3];
+        nuevoNodo.hijos[1] = nodoActual.hijos[4];
+        nuevoNodo.hijos[2] = nodoAux;
+        nodoActual.hijos[3] = null;
+        nodoActual.hijos[4] = null;
+
+        if (noHayPadre(arbolB, nodoActual)) {
+            NodoB nuevaRaiz = new NodoB();
+            nuevaRaiz.datos[0] = new Dato();
+            nuevaRaiz.datos[0].dato = nodoActual.datos[2].dato;
+            nodoActual.datos[2] = null;
+            nuevaRaiz.hijos[0] = arbolB.raiz;
+            nuevaRaiz.hijos[1] = nuevoNodo;
+            arbolB.raiz = nuevaRaiz;
+        } else {
+            NodoB nodoPadre = buscarPadre(arbolB.raiz, nodoActual);
+            insertarEnNodo(nodoPadre, nodoActual.datos[2].dato);
+            nodoActual.datos[2] = null;
+            if (nodoLleno(nodoPadre.datos)) {
+                solucionarOverflow(arbolB, nodoPadre, nuevoNodo);
+            } else {
+                int i = 0;
+                while (nodoPadre.hijos[i] != null) {
+                    i++;
+                }
+                nodoPadre.hijos[i] = nuevoNodo;
+                while (i > 0) {
+                    if (nodoPadre.hijos[i].datos[0].dato < nodoPadre.hijos[i - 1].datos[0].dato) {
+                        NodoB aux = nodoPadre.hijos[i - 1];
+                        nodoPadre.hijos[i - 1] = nuevoNodo;
+                        nodoPadre.hijos[i] = aux;
+                    }
+                    i--;
+                }
+            }
+
+        }
+
+    }
+
+    public static boolean noHayPadre(ArbolB arbolB, NodoB nodoActual) {
+        return (arbolB.raiz == nodoActual);
+    }
+
+    public static NodoB buscarPadre(NodoB nodoActual, NodoB nodoHijo) {
+        int i = 0;
+        while (nodoActual.datos[i] != null) {
+            if (nodoActual.hijos[i] == nodoHijo) {
+                return nodoActual;
+            }
+            i++;
+        }
+        if (nodoActual.hijos[i] == nodoHijo) {
+            return nodoActual;
+        }
+        int j = 0;
+        while (nodoActual.datos[j] != null) {
+            if (nodoActual.datos[j].dato > nodoHijo.datos[0].dato) {
+                return buscarPadre(nodoActual.hijos[j], nodoHijo);
+            }
+            j++;
+        }
+        return buscarPadre(nodoActual.hijos[j], nodoHijo);
+    }
+
+    public static void borrarB(ArbolB arbolB, int dato) {
 
     }
 
@@ -530,8 +805,8 @@ public class FinalEstructuraDeDatos {
                     operacionesArbolAVL(arbolAVL);
                     break;
                 case 3:
-
-                    operacionesArbolB();
+                    ArbolB arbolB = new ArbolB();
+                    operacionesArbolB(arbolB);
                     break;
                 case 4:
                     System.out.println("Actulizar");
