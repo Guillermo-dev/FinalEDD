@@ -830,7 +830,7 @@ public class FinalEstructuraDeDatos {
             if (!(noHayPadre(arbolB, nodoAEliminar))) {
                 if (cantidadElementos(nodoAEliminar) < 2) {
                     NodoB nodoPadre = buscarPadre(arbolB.raiz, nodoAEliminar);
-                    transferencia(nodoPadre, nodoAEliminar);
+                    transferencia(arbolB, nodoPadre, nodoAEliminar);
                 }
             }
         }
@@ -848,7 +848,7 @@ public class FinalEstructuraDeDatos {
         return i;
     }
 
-    public static void transferencia(NodoB nodoPadre, NodoB nodoActual) {
+    public static void transferencia(ArbolB arbolB, NodoB nodoPadre, NodoB nodoActual) {
         int i = 0;
         int cantHI = 0;
         int cantHD = 0;
@@ -858,36 +858,41 @@ public class FinalEstructuraDeDatos {
             i++;
         }
         if (i != 0) {
-            hermanoIzq = nodoPadre.hijos[i - 1];
-            cantHI = cantidadElementos(hermanoIzq);
+            if (nodoPadre.hijos[i - 1] != null) {
+                hermanoIzq = nodoPadre.hijos[i - 1];
+                cantHI = cantidadElementos(hermanoIzq);
+            }
         }
         if (i != 4) {
-            hermanoDer = nodoPadre.hijos[i + 1];
-            cantHD = cantidadElementos(hermanoDer);
+            if (nodoPadre.hijos[i + 1] != null) {
+                hermanoDer = nodoPadre.hijos[i + 1];
+                System.out.println(hermanoDer.datos[0].dato);
+                cantHD = cantidadElementos(hermanoDer);
+            }
         }
         if (cantHI > 2 || cantHD > 2) {
             if (cantHI > cantHD) {
                 insertarEnNodo(nodoActual, nodoPadre.datos[i - 1].dato);
-                nodoPadre.datos[i - 1] = hermanoIzq.datos[cantHI-1];
-                hermanoIzq.datos[cantHI-1] = null;
+                nodoPadre.datos[i - 1] = hermanoIzq.datos[cantHI - 1];
+                hermanoIzq.datos[cantHI - 1] = null;
                 System.out.println("Transferencia con hermano izquierdo");
             } else {
                 insertarEnNodo(nodoActual, nodoPadre.datos[i].dato);
                 nodoPadre.datos[i] = hermanoDer.datos[0];
-                i=0;
-                while (hermanoDer.datos[i+1]!= null){
-                    hermanoDer.datos[i] = hermanoDer.datos[i+1];
+                i = 0;
+                while (hermanoDer.datos[i + 1] != null) {
+                    hermanoDer.datos[i] = hermanoDer.datos[i + 1];
                     i++;
                 }
                 hermanoDer.datos[i] = null;
                 System.out.println("Transferencia con hermano derecho");
             }
         } else {
-            fusion(nodoPadre, nodoActual, hermanoIzq, hermanoDer);
+            fusion(arbolB, nodoPadre, nodoActual, hermanoIzq, hermanoDer);
         }
     }
 
-    public static void fusion(NodoB nodoPadre, NodoB nodoActual, NodoB hermanoIzq, NodoB hermanoDer) {
+    public static void fusion(ArbolB arbolB, NodoB nodoPadre, NodoB nodoActual, NodoB hermanoIzq, NodoB hermanoDer) {
         if (hermanoIzq != null) {
             int i = 0;
             while (nodoPadre.hijos[i] != nodoActual) {
@@ -896,6 +901,9 @@ public class FinalEstructuraDeDatos {
             insertarEnNodo(nodoActual, nodoPadre.datos[i - 1].dato);
             insertarEnNodo(nodoActual, hermanoIzq.datos[0].dato);
             insertarEnNodo(nodoActual, hermanoIzq.datos[1].dato);
+            nodoActual.hijos[2] = hermanoIzq.hijos[0];
+            nodoActual.hijos[3] = hermanoIzq.hijos[1];
+            nodoActual.hijos[4] = hermanoIzq.hijos[2];
 
             while (nodoPadre.datos[i] != null) {
                 nodoPadre.datos[i - 1].dato = nodoPadre.datos[i].dato;
@@ -927,6 +935,9 @@ public class FinalEstructuraDeDatos {
             insertarEnNodo(nodoActual, nodoPadre.datos[i].dato);
             insertarEnNodo(nodoActual, hermanoDer.datos[0].dato);
             insertarEnNodo(nodoActual, hermanoDer.datos[1].dato);
+            nodoActual.hijos[2] = hermanoDer.hijos[0];
+            nodoActual.hijos[3] = hermanoDer.hijos[1];
+            nodoActual.hijos[4] = hermanoDer.hijos[2];
 
             while (nodoPadre.datos[i + 1] != null) {
                 nodoPadre.datos[i].dato = nodoPadre.datos[i + 1].dato;
@@ -956,6 +967,13 @@ public class FinalEstructuraDeDatos {
             }
         }
         System.out.println("Fusion");
+        if (nodoPadre.datos[0] == null) {
+            arbolB.raiz = nodoPadre.hijos[0];
+        } else if (!(noHayPadre(arbolB, nodoPadre))) {
+            if (cantidadElementos(nodoPadre) < 2) {
+                transferencia(arbolB, buscarPadre(arbolB.raiz, nodoPadre), nodoPadre);
+            }
+        }
     }
 
     public static void main(String[] args) {
