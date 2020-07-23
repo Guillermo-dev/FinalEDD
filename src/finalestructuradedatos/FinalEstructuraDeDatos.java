@@ -866,7 +866,6 @@ public class FinalEstructuraDeDatos {
         if (i != 4) {
             if (nodoPadre.hijos[i + 1] != null) {
                 hermanoDer = nodoPadre.hijos[i + 1];
-                System.out.println(hermanoDer.datos[0].dato);
                 cantHD = cantidadElementos(hermanoDer);
             }
         }
@@ -901,9 +900,11 @@ public class FinalEstructuraDeDatos {
             insertarEnNodo(nodoActual, nodoPadre.datos[i - 1].dato);
             insertarEnNodo(nodoActual, hermanoIzq.datos[0].dato);
             insertarEnNodo(nodoActual, hermanoIzq.datos[1].dato);
-            nodoActual.hijos[2] = hermanoIzq.hijos[0];
-            nodoActual.hijos[3] = hermanoIzq.hijos[1];
-            nodoActual.hijos[4] = hermanoIzq.hijos[2];
+            nodoActual.hijos[3] = nodoActual.hijos[1];
+            nodoActual.hijos[4] = nodoActual.hijos[2];
+            nodoActual.hijos[0] = hermanoIzq.hijos[0];
+            nodoActual.hijos[1] = hermanoIzq.hijos[1];
+            nodoActual.hijos[2] = hermanoIzq.hijos[2];
 
             while (nodoPadre.datos[i] != null) {
                 nodoPadre.datos[i - 1].dato = nodoPadre.datos[i].dato;
