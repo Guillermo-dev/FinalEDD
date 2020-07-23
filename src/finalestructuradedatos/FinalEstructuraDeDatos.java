@@ -15,7 +15,7 @@ public class FinalEstructuraDeDatos {
         System.out.println("=======================ARBOLES=======================\n"
                 + "1)ABB (enteros)\n"
                 + "2)AVL (enteros)\n"
-                + "3)B (enteros)\n"
+                + "3)B M=5(enteros)\n"
                 + "=======================ARCHIVOS=======================\n"
                 + "4)Actualizar archivo maestro con un archivo detalle\n"
                 + "5)Merge\n"
@@ -551,6 +551,8 @@ public class FinalEstructuraDeDatos {
     public static void recorrerB(ArbolB arbolB) {
         if (arbolB.raiz == null) {
             System.out.println("El arbol esta vacio");
+        } else if (arbolB.raiz.datos[0] == null) {
+            System.out.println("El arbol esta vacio");
         } else {
             NodoB nodoActual = arbolB.raiz;
             System.out.print("Recorrido Inorden arbolB: ");
@@ -785,7 +787,175 @@ public class FinalEstructuraDeDatos {
     }
 
     public static void borrarB(ArbolB arbolB, int dato) {
+        if (!seEncontroB(arbolB.raiz, dato)) {
+            System.out.println("El dato que desea eliminar no se encuentra en el arbol");
+        } else {
+            NodoB nodoAEliminar = busquedaB(arbolB.raiz, dato);
+            borrarElemento(arbolB, nodoAEliminar, dato);
 
+        }
+    }
+
+    public static void borrarElemento(ArbolB arbolB, NodoB nodoAEliminar, int dato) {
+        if (esNodoInterno(nodoAEliminar)) {
+            int i = 0;
+            while (nodoAEliminar.datos[i].dato != dato) {
+                i++;
+            }
+            NodoB nodoHI = nodoAEliminar.hijos[i];
+            NodoB nodoHD = nodoAEliminar.hijos[i + 1];
+            int cantHI = cantidadElementos(nodoHI);
+            int cantHD = cantidadElementos(nodoHD);
+
+            if (cantHI > cantHD) {
+                nodoAEliminar.datos[i].dato = nodoHI.datos[cantHI].dato;
+                nodoHI.datos[cantHI].dato = dato;
+                borrarElemento(arbolB, nodoHI, dato);
+            } else {
+                nodoAEliminar.datos[i].dato = nodoHD.datos[0].dato;
+                nodoHD.datos[0].dato = dato;
+                borrarElemento(arbolB, nodoHD, dato);
+            }
+        } else {
+            int i = 0;
+            while (nodoAEliminar.datos[i].dato != dato) {
+                i++;
+            }
+            while (nodoAEliminar.datos[i + 1] != null) {
+                nodoAEliminar.datos[i].dato = nodoAEliminar.datos[i + 1].dato;
+                nodoAEliminar.datos[i + 1].dato = dato;
+                i++;
+            }
+            nodoAEliminar.datos[i] = null;
+            if (!(noHayPadre(arbolB, nodoAEliminar))) {
+                if (cantidadElementos(nodoAEliminar) < 2) {
+                    NodoB nodoPadre = buscarPadre(arbolB.raiz, nodoAEliminar);
+                    transferencia(nodoPadre, nodoAEliminar);
+                }
+            }
+        }
+    }
+
+    public static boolean esNodoInterno(NodoB nodoActual) {
+        return (nodoActual.hijos[0] != null);
+    }
+
+    public static int cantidadElementos(NodoB nodoActual) {
+        int i = 0;
+        while (nodoActual.datos[i] != null) {
+            i++;
+        }
+        return i;
+    }
+
+    public static void transferencia(NodoB nodoPadre, NodoB nodoActual) {
+        int i = 0;
+        int cantHI = 0;
+        int cantHD = 0;
+        NodoB hermanoIzq = null;
+        NodoB hermanoDer = null;
+        while (nodoPadre.hijos[i] != nodoActual) {
+            i++;
+        }
+        if (i != 0) {
+            hermanoIzq = nodoPadre.hijos[i - 1];
+            cantHI = cantidadElementos(hermanoIzq);
+        }
+        if (i != 4) {
+            hermanoDer = nodoPadre.hijos[i + 1];
+            cantHD = cantidadElementos(hermanoDer);
+        }
+        if (cantHI > 2 || cantHD > 2) {
+            if (cantHI > cantHD) {
+                insertarEnNodo(nodoActual, nodoPadre.datos[i - 1].dato);
+                nodoPadre.datos[i - 1] = hermanoIzq.datos[cantHI-1];
+                hermanoIzq.datos[cantHI-1] = null;
+                System.out.println("Transferencia con hermano izquierdo");
+            } else {
+                insertarEnNodo(nodoActual, nodoPadre.datos[i].dato);
+                nodoPadre.datos[i] = hermanoDer.datos[0];
+                i=0;
+                while (hermanoDer.datos[i+1]!= null){
+                    hermanoDer.datos[i] = hermanoDer.datos[i+1];
+                    i++;
+                }
+                hermanoDer.datos[i] = null;
+                System.out.println("Transferencia con hermano derecho");
+            }
+        } else {
+            fusion(nodoPadre, nodoActual, hermanoIzq, hermanoDer);
+        }
+    }
+
+    public static void fusion(NodoB nodoPadre, NodoB nodoActual, NodoB hermanoIzq, NodoB hermanoDer) {
+        if (hermanoIzq != null) {
+            int i = 0;
+            while (nodoPadre.hijos[i] != nodoActual) {
+                i++;
+            }
+            insertarEnNodo(nodoActual, nodoPadre.datos[i - 1].dato);
+            insertarEnNodo(nodoActual, hermanoIzq.datos[0].dato);
+            insertarEnNodo(nodoActual, hermanoIzq.datos[1].dato);
+
+            while (nodoPadre.datos[i] != null) {
+                nodoPadre.datos[i - 1].dato = nodoPadre.datos[i].dato;
+                i++;
+            }
+            nodoPadre.datos[i - 1] = null;
+
+            i = 0;
+            while (i < 4) {
+                if (nodoPadre.hijos[i + 1] != null) {
+                    if (nodoPadre.hijos[i].datos[0].dato == nodoPadre.hijos[i + 1].datos[0].dato) {
+                        nodoPadre.hijos[i] = nodoPadre.hijos[i + 1];
+                        if (i < 3) {
+                            nodoPadre.hijos[i + 1] = nodoPadre.hijos[i + 2];
+                        } else {
+                            nodoPadre.hijos[4] = null;
+                        }
+                    }
+
+                }
+                i++;
+            }
+
+        } else {
+            int i = 0;
+            while (nodoPadre.hijos[i] != nodoActual) {
+                i++;
+            }
+            insertarEnNodo(nodoActual, nodoPadre.datos[i].dato);
+            insertarEnNodo(nodoActual, hermanoDer.datos[0].dato);
+            insertarEnNodo(nodoActual, hermanoDer.datos[1].dato);
+
+            while (nodoPadre.datos[i + 1] != null) {
+                nodoPadre.datos[i].dato = nodoPadre.datos[i + 1].dato;
+                i++;
+            }
+            nodoPadre.datos[i] = null;
+
+            i = 0;
+            while (i < 4) {
+                if (nodoPadre.hijos[i + 1] != null) {
+                    if (nodoPadre.hijos[i].datos[2] != null) {
+                        if (nodoPadre.hijos[i].datos[2].dato == nodoPadre.hijos[i + 1].datos[0].dato) {
+                            nodoPadre.hijos[i + 1] = nodoPadre.hijos[i + 2];
+                        }
+                    } else {
+                        if (nodoPadre.hijos[i] == nodoPadre.hijos[i + 1]) {
+                            if (i < 3) {
+                                nodoPadre.hijos[i + 1] = nodoPadre.hijos[i + 2];
+                            } else {
+                                nodoPadre.hijos[4] = null;
+                            }
+                        }
+                    }
+
+                }
+                i++;
+            }
+        }
+        System.out.println("Fusion");
     }
 
     public static void main(String[] args) {
