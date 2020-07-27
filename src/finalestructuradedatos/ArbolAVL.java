@@ -1,6 +1,6 @@
-
 package finalestructuradedatos;
 
 public class ArbolAVL {
-    public Nodo raiz;
+
+    Nodo raiz;
 }
