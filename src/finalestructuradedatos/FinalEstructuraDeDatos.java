@@ -1,10 +1,24 @@
 package finalestructuradedatos;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Scanner;
 
 public class FinalEstructuraDeDatos {
 
-    public static Scanner in = new Scanner(System.in);
+    //CONSTANTES
+    static Scanner in = new Scanner(System.in);
+    static String RUTA = "C:\\Users\\guill\\OneDrive\\Escritorio\\Estructura_Datos\\";
+    static int CANT_PRODUCTOS = 4;
+    static String[] NOMBRES = {"Producto 1", "Producto 2", "Producto 3", "Producto 4", "Producto 5"};
+    static String[] CODIGOS = {"0001", "0002", "0003", "0004", "0005"};
+    static float[] PRECIOS = {100, 200, 150, 500, 350};
+    static int[] STOCK = {1000, 1000, 1000, 1000, 1000};
 
     static class Bool {
 
@@ -17,9 +31,7 @@ public class FinalEstructuraDeDatos {
                 + "2)AVL (enteros)\n"
                 + "3)B M=5(enteros)\n"
                 + "=======================ARCHIVOS=======================\n"
-                + "4)Actualizar archivo maestro con un archivo detalle\n"
-                + "5)Merge\n"
-                + "6)Corte de Control\n"
+                + "4)Archivos (stock de productos para la venta)\n"
                 + "======================================================\n");
     }
 
@@ -976,12 +988,255 @@ public class FinalEstructuraDeDatos {
         }
     }
 
+    public static void menuArchivos() {
+        System.out.println("1)Generar archivo maestro \n"
+                + "2)Actualizar archivo maestro con un archivo detalle\n"
+                + "3)Merge\n"
+                + "4)Corte de Control\n");
+    }
+
+    public static void operacionesArchivos() {
+        int respuesta;
+        String nombreMaestro;
+        in.nextLine();
+        System.out.println("Ingresar el nombre que quiera que tenga el archivo");
+        nombreMaestro = in.nextLine();
+        do {
+            menuArchivos();
+            System.out.println("Ingresar numero de operacion (5 para finalizar)");
+            respuesta = in.nextInt();
+            switch (respuesta) {
+                case 1:
+                    generarMaestro(nombreMaestro);
+                    break;
+                case 2:
+                    in.nextLine();
+                    generarDetalle("Detalle", nombreMaestro);
+                    actualizarMaestro(nombreMaestro, "Detalle");
+                    break;
+                case 3:
+                    merge();
+                    break;
+                case 4:
+                    corteDeControl(nombreMaestro);
+                    break;
+                default:
+                    System.out.println("Ingresar operacion valida");
+            }
+        } while (respuesta != 5);
+    }
+
+    public static void generarMaestro(String nombreMaestro) {
+        FileOutputStream maestro;
+        ObjectOutputStream bufferSalida;
+
+        try {
+
+            maestro = new FileOutputStream(RUTA + nombreMaestro + ".dat");
+            bufferSalida = new ObjectOutputStream(maestro);
+
+            for (int i = 0; i < CANT_PRODUCTOS; i++) {
+
+                Producto nuevoProducto = new Producto();
+                nuevoProducto.nombre = NOMBRES[i];
+                nuevoProducto.codigo = CODIGOS[i];
+                nuevoProducto.precio = PRECIOS[i];
+                nuevoProducto.stock = STOCK[i];
+
+                bufferSalida.writeObject(nuevoProducto);
+            }
+
+            bufferSalida.close();
+        } catch (FileNotFoundException ex) {
+            System.out.println("No se encontro un archivo con el nombre " + nombreMaestro + ".dat");
+        } catch (IOException ex) {
+        }
+    }
+
+    public static void generarDetalle(String nombreDetalle, String nombreMaestro) {
+        char respuesta;
+        FileOutputStream detalle;
+        ObjectOutputStream bufferSalida;
+
+        try {
+
+            do {
+                FileInputStream maestro = new FileInputStream(RUTA + nombreMaestro + ".dat");
+                detalle = new FileOutputStream(RUTA + nombreDetalle + ".dat");
+                bufferSalida = new ObjectOutputStream(detalle);
+
+                Venta nuevaVenta = new Venta();
+                System.out.println("Ingresar el codigo del producto que se vendio (0001 a 0004)");
+                nuevaVenta.codigo = in.nextLine();
+                while (!nuevaVenta.codigo.equals("0001") && !nuevaVenta.codigo.equals("0002") && !nuevaVenta.codigo.equals("0003") && !nuevaVenta.codigo.equals("0004")) {
+                    System.out.println("Ingresar el codigo del producto que se vendio (0001 a 0004)");
+                    nuevaVenta.codigo = in.nextLine();
+                }
+                System.out.println("Ingresar la cantidad de elementos vendidos");
+                nuevaVenta.cantidadVendida = in.nextInt();
+                while (cantidadExedida(nuevaVenta.cantidadVendida, nombreMaestro)) {
+                    System.out.println("Ingresar la cantidad de elementos vendidos");
+                    nuevaVenta.cantidadVendida = in.nextInt();
+                }
+
+                bufferSalida.writeObject(nuevaVenta);
+
+                System.out.println("Desea ingresar un nuevo prroducto?(S/N)");
+                in.nextLine();
+                respuesta = in.nextLine().charAt(0);
+                while (respuesta != 's' && respuesta != 'S' && respuesta != 'n' && respuesta != 'N') {
+                    System.out.println("Desea ingresar un nuevo prroducto?(S/N)");
+                    in.nextLine();
+                    respuesta = in.nextLine().charAt(0);
+                }
+
+            } while (respuesta == 's' || respuesta == 'S');
+
+            bufferSalida.close();
+        } catch (FileNotFoundException ex) {
+        } catch (IOException ex) {
+        }
+    }
+
+    public static boolean cantidadExedida(int cantidadVendida, String nombreMaestro) {
+        FileInputStream maestro;
+        ObjectInputStream bufferEntrada;
+
+        try {
+            maestro = new FileInputStream(RUTA + nombreMaestro + ".dat");
+            bufferEntrada = new ObjectInputStream(maestro);
+
+            Producto producto = (Producto) bufferEntrada.readObject();
+            return producto.stock < cantidadVendida;
+
+        } catch (FileNotFoundException ex) {
+        } catch (IOException | ClassNotFoundException ex) {
+        }
+        return true;
+    }
+
+    public static void actualizarMaestro(String nombreMaestro, String nombreDetalle) {
+        FileInputStream maestro;
+        FileInputStream detalle;
+        ObjectInputStream bufferEntradaMas;
+        ObjectInputStream bufferEntradaDet;
+
+        FileOutputStream nuevoMaestro;
+        ObjectOutputStream bufferSalida;
+
+        try {
+            maestro = new FileInputStream(RUTA + nombreMaestro + ".dat");
+            detalle = new FileInputStream(RUTA + nombreDetalle + ".dat");
+            bufferEntradaMas = new ObjectInputStream(maestro);
+            bufferEntradaDet = new ObjectInputStream(detalle);
+
+            nuevoMaestro = new FileOutputStream(RUTA + "Auxiliar\\" + nombreMaestro + ".dat");
+
+            do {
+            Venta venta = (Venta) bufferEntradaDet.readObject();
+            bufferSalida = new ObjectOutputStream(nuevoMaestro);
+
+            for (int i = 0; i < CANT_PRODUCTOS; i++) {
+
+                Producto producto = (Producto) bufferEntradaMas.readObject();
+
+                if (venta.codigo.equals(producto.codigo)) {
+                    producto.stock -= venta.cantidadVendida;
+                }
+                Producto nuevoProducto = new Producto();
+                nuevoProducto.nombre = producto.nombre;
+                nuevoProducto.codigo = producto.codigo;
+                nuevoProducto.precio = producto.precio;
+                nuevoProducto.stock = producto.stock;
+                bufferSalida.writeObject(nuevoProducto);
+                
+            }
+
+            File viejoMaestro = new File(RUTA + nombreMaestro + ".dat");
+            viejoMaestro.delete();
+
+            FileInputStream maestro2 = new FileInputStream(RUTA + "Auxiliar\\" + nombreMaestro + ".dat");
+            ObjectInputStream bufferEntradaMas2 = new ObjectInputStream(maestro2);
+
+            FileOutputStream nuevoMaestro2 = new FileOutputStream(RUTA + nombreMaestro + ".dat");
+            ObjectOutputStream bufferSalida2 = new ObjectOutputStream(nuevoMaestro2);
+
+            for (int i = 0; i < CANT_PRODUCTOS; i++) {
+
+                Producto producto = (Producto) bufferEntradaMas2.readObject();
+
+                Producto nuevoProducto = new Producto();
+                nuevoProducto.nombre = producto.nombre;
+                nuevoProducto.codigo = producto.codigo;
+                nuevoProducto.precio = producto.precio;
+                nuevoProducto.stock = producto.stock;
+                bufferSalida2.writeObject(nuevoProducto);
+            }
+
+            bufferEntradaMas2.close();
+            bufferSalida2.close();
+            nuevoMaestro.close();
+            
+            File aux = new File(RUTA + "Auxiliar\\" + nombreMaestro + ".dat");
+            aux.delete();
+
+             }while (bufferEntradaDet.available() == 0);
+            bufferEntradaMas.close();
+            bufferEntradaDet.close();
+
+        } catch (FileNotFoundException ex) {
+            System.out.println("No se encontro el archivo maestro\n");
+        } catch (IOException | ClassNotFoundException ex) {
+        }
+
+    }
+
+
+
+    public static void corteDeControl(String nombreMaestro) {
+        FileInputStream maestro;
+        ObjectInputStream bufferEntrada;
+        int ventasTotales = 0;
+        float dineroTotal = 0;
+
+        try {
+
+            maestro = new FileInputStream(RUTA + nombreMaestro + ".dat");
+            bufferEntrada = new ObjectInputStream(maestro);
+
+            for (int i = 0; i < CANT_PRODUCTOS; i++) {
+
+                Producto producto = (Producto) bufferEntrada.readObject();
+
+                System.out.println("===============================================================");
+                System.out.println("Producto: " + producto.nombre);
+                System.out.println("Codigo: " + producto.codigo);
+                System.out.println("Stock disponible: " + producto.stock);
+                System.out.println("Ventas realizadas: " + (STOCK[i] - producto.stock));
+                System.out.println("Dinero por ventas: $" + (STOCK[i] - producto.stock) * PRECIOS[i]);
+                ventasTotales += (STOCK[i] - producto.stock);
+                dineroTotal += (STOCK[i] - producto.stock) * PRECIOS[i];
+            }
+            System.out.println("===============================================================");
+            System.out.println("Total de ventas realizadas: " + ventasTotales);
+            System.out.println("Total de dinero por ventas: $" + dineroTotal);
+            System.out.println("===============================================================");
+            System.out.println("                            nombre del archivo:" + nombreMaestro + ".dat");
+
+            bufferEntrada.close();
+
+        } catch (FileNotFoundException ex) {
+            System.out.println("No se encontro un archivo con el nombre " + nombreMaestro + ".dat\n");
+        } catch (IOException | ClassNotFoundException ex) {
+        }
+    }
+
     public static void main(String[] args) {
         int respuesta;
 
         do {
             menu();
-            System.out.println("Ingresar numero de operacion (7 para finalizar)");
+            System.out.println("Ingresar numero de operacion (5 para finalizar)");
             respuesta = in.nextInt();
             switch (respuesta) {
                 case 1:
@@ -997,18 +1252,12 @@ public class FinalEstructuraDeDatos {
                     operacionesArbolB(arbolB);
                     break;
                 case 4:
-                    System.out.println("Actulizar");
-                    break;
-                case 5:
-                    System.out.println("Merge");
-                    break;
-                case 6:
-                    System.out.println("corte de control");
+                    operacionesArchivos();
                     break;
                 default:
                     System.out.println("Ingresar numero de operacion valido");
             }
-        } while (respuesta != 7);
+        } while (respuesta != 5);
     }
 
 }
