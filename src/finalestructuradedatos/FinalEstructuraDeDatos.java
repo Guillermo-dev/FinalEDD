@@ -1059,11 +1059,11 @@ public class FinalEstructuraDeDatos {
         ObjectOutputStream bufferSalida;
 
         try {
+            FileInputStream maestro = new FileInputStream(RUTA + nombreMaestro + ".dat");
+            detalle = new FileOutputStream(RUTA + nombreDetalle + ".dat");
+            bufferSalida = new ObjectOutputStream(detalle);
 
             do {
-                FileInputStream maestro = new FileInputStream(RUTA + nombreMaestro + ".dat");
-                detalle = new FileOutputStream(RUTA + nombreDetalle + ".dat");
-                bufferSalida = new ObjectOutputStream(detalle);
 
                 Venta nuevaVenta = new Venta();
                 System.out.println("Ingresar el codigo del producto que se vendio (0001 a 0004)");
@@ -1118,80 +1118,86 @@ public class FinalEstructuraDeDatos {
     public static void actualizarMaestro(String nombreMaestro, String nombreDetalle) {
         FileInputStream maestro;
         FileInputStream detalle;
-        ObjectInputStream bufferEntradaMas;
+        //ObjectInputStream bufferEntradaMas;
         ObjectInputStream bufferEntradaDet;
 
-        FileOutputStream nuevoMaestro;
-        ObjectOutputStream bufferSalida;
-
+        //FileOutputStream nuevoMaestro;
+        //ObjectOutputStream bufferSalida;
         try {
-            maestro = new FileInputStream(RUTA + nombreMaestro + ".dat");
+
             detalle = new FileInputStream(RUTA + nombreDetalle + ".dat");
-            bufferEntradaMas = new ObjectInputStream(maestro);
             bufferEntradaDet = new ObjectInputStream(detalle);
 
-            nuevoMaestro = new FileOutputStream(RUTA + "Auxiliar\\" + nombreMaestro + ".dat");
+            for (int j = 0; j < CANT_PRODUCTOS; j++) {
 
-            do {
-            Venta venta = (Venta) bufferEntradaDet.readObject();
-            bufferSalida = new ObjectOutputStream(nuevoMaestro);
+                System.out.println("ENTRO");
 
-            for (int i = 0; i < CANT_PRODUCTOS; i++) {
+                maestro = new FileInputStream(RUTA + nombreMaestro + ".dat");
+                ObjectInputStream bufferEntradaMas = new ObjectInputStream(maestro);
 
-                Producto producto = (Producto) bufferEntradaMas.readObject();
+                Venta venta = (Venta) bufferEntradaDet.readObject();
 
-                if (venta.codigo.equals(producto.codigo)) {
-                    producto.stock -= venta.cantidadVendida;
+                FileOutputStream nuevoMaestro = new FileOutputStream(RUTA + nombreMaestro + "2.dat");
+                ObjectOutputStream bufferSalida = new ObjectOutputStream(nuevoMaestro);
+
+                for (int i = 0; i < CANT_PRODUCTOS; i++) {
+
+                    Producto producto = (Producto) bufferEntradaMas.readObject();
+
+                    if (venta.codigo.equals(producto.codigo)) {
+                        producto.stock -= venta.cantidadVendida;
+                    }
+                    Producto nuevoProducto = new Producto();
+                    nuevoProducto.nombre = producto.nombre;
+                    nuevoProducto.codigo = producto.codigo;
+                    nuevoProducto.precio = producto.precio;
+                    nuevoProducto.stock = producto.stock;
+                    bufferSalida.writeObject(nuevoProducto);
+
                 }
-                Producto nuevoProducto = new Producto();
-                nuevoProducto.nombre = producto.nombre;
-                nuevoProducto.codigo = producto.codigo;
-                nuevoProducto.precio = producto.precio;
-                nuevoProducto.stock = producto.stock;
-                bufferSalida.writeObject(nuevoProducto);
                 
+
+                File viejoMaestro = new File(RUTA + nombreMaestro + ".dat");
+                viejoMaestro.delete();
+
+                FileInputStream maestro2 = new FileInputStream(RUTA + nombreMaestro + "2.dat");
+                ObjectInputStream bufferEntradaMas2 = new ObjectInputStream(maestro2);
+
+                FileOutputStream nuevoMaestro2 = new FileOutputStream(RUTA + nombreMaestro + ".dat");
+                ObjectOutputStream bufferSalida2 = new ObjectOutputStream(nuevoMaestro2);
+
+                for (int i = 0; i < CANT_PRODUCTOS; i++) {
+
+                    Producto producto = (Producto) bufferEntradaMas2.readObject();
+
+                    Producto nuevoProducto = new Producto();
+                    nuevoProducto.nombre = producto.nombre;
+                    nuevoProducto.codigo = producto.codigo;
+                    nuevoProducto.precio = producto.precio;
+                    nuevoProducto.stock = producto.stock;
+                    bufferSalida2.writeObject(nuevoProducto);
+                }
+
+                bufferEntradaMas2.close();
+                bufferSalida2.close();
+                nuevoMaestro.close();
+                bufferSalida.close();
+                bufferEntradaMas.close();
+
+                File aux = new File(RUTA + nombreMaestro + "2.dat");
+                aux.delete();
+
             }
 
-            File viejoMaestro = new File(RUTA + nombreMaestro + ".dat");
-            viejoMaestro.delete();
-
-            FileInputStream maestro2 = new FileInputStream(RUTA + "Auxiliar\\" + nombreMaestro + ".dat");
-            ObjectInputStream bufferEntradaMas2 = new ObjectInputStream(maestro2);
-
-            FileOutputStream nuevoMaestro2 = new FileOutputStream(RUTA + nombreMaestro + ".dat");
-            ObjectOutputStream bufferSalida2 = new ObjectOutputStream(nuevoMaestro2);
-
-            for (int i = 0; i < CANT_PRODUCTOS; i++) {
-
-                Producto producto = (Producto) bufferEntradaMas2.readObject();
-
-                Producto nuevoProducto = new Producto();
-                nuevoProducto.nombre = producto.nombre;
-                nuevoProducto.codigo = producto.codigo;
-                nuevoProducto.precio = producto.precio;
-                nuevoProducto.stock = producto.stock;
-                bufferSalida2.writeObject(nuevoProducto);
-            }
-
-            bufferEntradaMas2.close();
-            bufferSalida2.close();
-            nuevoMaestro.close();
-            
-            File aux = new File(RUTA + "Auxiliar\\" + nombreMaestro + ".dat");
-            aux.delete();
-
-             }while (bufferEntradaDet.available() == 0);
-            bufferEntradaMas.close();
             bufferEntradaDet.close();
 
         } catch (FileNotFoundException ex) {
             System.out.println("No se encontro el archivo maestro\n");
         } catch (IOException | ClassNotFoundException ex) {
+            //ex.printStackTrace();
         }
 
     }
-
-
 
     public static void corteDeControl(String nombreMaestro) {
         FileInputStream maestro;
@@ -1259,5 +1265,4 @@ public class FinalEstructuraDeDatos {
             }
         } while (respuesta != 5);
     }
-
 }
