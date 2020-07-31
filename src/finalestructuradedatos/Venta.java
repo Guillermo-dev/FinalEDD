@@ -3,6 +3,6 @@ import java.io.Serializable;
 
 public class Venta implements Serializable{
 
-    String codigo;
+    int codigo;
     int cantidadVendida;
 }
