@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class FinalEstructuraDeDatos {
 
@@ -1004,6 +1002,7 @@ public class FinalEstructuraDeDatos {
         String nombreMaestro = "";
         String nombreMaestro2 = "";
         in.nextLine();
+        int p;
 
         do {
             menuArchivos();
@@ -1036,7 +1035,62 @@ public class FinalEstructuraDeDatos {
                     corteControlMerge(nombreMaestro2 + "Merge");
                     break;
                 case 6:
-                    eliminarMaestro(nombreMaestro, nombreMaestro2 + "Merge");
+                    do {
+
+                        System.out.println("Que desea eliminar:\n"
+                                + "1)Maestro constante \n"
+                                + "2)Generado por el merge \n"
+                                + "3)Ambos \n"
+                                + "4)Finalizar \n");
+                        p = in.nextInt();
+                        switch (p) {
+                            case 1:
+                                System.out.println("Seguro que quiere eliminar el archivo: " + nombreMaestro + " ? (S/N)");
+                                in.nextLine();
+                                respuesta = in.nextLine().charAt(0);
+                                while (respuesta != 's' && respuesta != 'S' && respuesta != 'n' && respuesta != 'N') {
+                                    System.out.println("Ingresar respuesta valida (S/N)");
+                                    in.nextLine();
+                                    respuesta = in.nextLine().charAt(0);
+                                }
+                                if (respuesta == 's' || respuesta == 'S') {
+                                    eliminarMaestro(nombreMaestro);
+                                }
+                                break;
+                            case 2:
+                                System.out.println("Seguro que quiere eliminar el archivo: " + nombreMaestro2 + " ? (S/N)");
+                                in.nextLine();
+                                respuesta = in.nextLine().charAt(0);
+                                while (respuesta != 's' && respuesta != 'S' && respuesta != 'n' && respuesta != 'N') {
+                                    System.out.println("Ingresar respuesta valida (S/N)");
+                                    in.nextLine();
+                                    respuesta = in.nextLine().charAt(0);
+                                }
+                                if (respuesta == 's' || respuesta == 'S') {
+                                    eliminarMaestro(nombreMaestro2 + "Merge");
+                                }
+                                break;
+                            case 3:
+                                System.out.println("Seguro que quiere eliminar los archivo: " + nombreMaestro + " y  " + nombreMaestro2 + " ? (S/N)");
+                                in.nextLine();
+                                respuesta = in.nextLine().charAt(0);
+                                while (respuesta != 's' && respuesta != 'S' && respuesta != 'n' && respuesta != 'N') {
+                                    System.out.println("Ingresar respuesta valida (S/N)");
+                                    in.nextLine();
+                                    respuesta = in.nextLine().charAt(0);
+                                }
+                                if (respuesta == 's' || respuesta == 'S') {
+                                    eliminarMaestro(nombreMaestro);
+                                    eliminarMaestro(nombreMaestro2 + "Merge");
+                                }
+                                break;
+                            case 4:
+                                System.out.println("No se elimino ningun archivo\n");
+                                break;
+                            default:
+                                System.out.println("Ingresar operacion valida");
+                        }
+                    } while (p != 4);
                     break;
                 default:
                     System.out.println("Ingresar operacion valida");
@@ -1439,78 +1493,24 @@ public class FinalEstructuraDeDatos {
             System.out.println("No se encontro un archivo maestro\n");
         } catch (IOException | ClassNotFoundException ex) {
         }
-        System.out.println("===============================================================");
-        System.out.println("                                Nombre del archivo:" + nombreMaestro + ".dat\n");
-        try {
-            bufferEntrada.close();
-        } catch (IOException ex) {
+        if (bufferEntrada != null) {
+            System.out.println("===============================================================");
+            System.out.println("                                Nombre del archivo:" + nombreMaestro + ".dat\n");
+            try {
+                bufferEntrada.close();
+            } catch (IOException ex) {
+            }
         }
     }
 
-    public static void eliminarMaestro(String maestroConst, String maestroMerge) {
-        char respuesta;
-        int p;
-        File maestroC = new File(RUTA + maestroConst + ".dat");
-        File maestroM = new File(RUTA + maestroMerge + ".dat");
-
-        do {
-            System.out.println("Que desea eliminar:\n"
-                    + "1)Maestro constante \n"
-                    + "2)Generado por el merge \n"
-                    + "3)Ambos \n"
-                    + "4)Finalizar \n");
-            p = in.nextInt();
-            switch (p) {
-                case 1:
-                    System.out.println("Seguro que quiere eliminar el archivo: " + maestroConst + " ? (S/N)");
-                    in.nextLine();
-                    respuesta = in.nextLine().charAt(0);
-                    while (respuesta != 's' && respuesta != 'S' && respuesta != 'n' && respuesta != 'N') {
-                        System.out.println("Ingresar respuesta valida (S/N)");
-                        in.nextLine();
-                        respuesta = in.nextLine().charAt(0);
-                    }
-                    if (respuesta == 's' || respuesta == 'S') {
-                        maestroC.delete();
-                        System.out.println("Se elimino el archivo " + maestroConst + "\n");
-                    }
-                    break;
-                case 2:
-                    System.out.println("Seguro que quiere eliminar el archivo: " + maestroMerge + " ? (S/N)");
-                    in.nextLine();
-                    respuesta = in.nextLine().charAt(0);
-                    while (respuesta != 's' && respuesta != 'S' && respuesta != 'n' && respuesta != 'N') {
-                        System.out.println("Ingresar respuesta valida (S/N)");
-                        in.nextLine();
-                        respuesta = in.nextLine().charAt(0);
-                    }
-                    if (respuesta == 's' || respuesta == 'S') {
-                        maestroM.delete();
-                        System.out.println("Se elimino el archivo: " + maestroMerge + "\n");
-                    }
-                    break;
-                case 3:
-                    System.out.println("Seguro que quiere eliminar los archivo: " + maestroConst + " y  " + maestroMerge + " ? (S/N)");
-                    in.nextLine();
-                    respuesta = in.nextLine().charAt(0);
-                    while (respuesta != 's' && respuesta != 'S' && respuesta != 'n' && respuesta != 'N') {
-                        System.out.println("Ingresar respuesta valida (S/N)");
-                        in.nextLine();
-                        respuesta = in.nextLine().charAt(0);
-                    }
-                    if (respuesta == 's' || respuesta == 'S') {
-                        maestroC.delete();
-                        maestroM.delete();
-                        System.out.println("Se eliminaron los archivos: " + maestroConst + " y " + maestroMerge + "\n");
-                    }
-                    break;
-                case 4:
-                    System.out.println("No se elimino ningun archivo\n");
-                    break;
-                default:
-                    System.out.println("Ingresar operacion valida");
-            }
-        } while (p != 4);
+    public static void eliminarMaestro(String nombreMaestro) {
+        if (!nombreMaestro.equals ("") && !nombreMaestro.equals ("Merge")) {
+            File maestro = new File(RUTA + nombreMaestro + ".dat");
+            maestro.delete();
+            System.out.println ("El archivo " + nombreMaestro + " se elimino con exito");
+        }else{
+            System.out.println ("El archivo maestro no existe");
+        }
     }
 
     public static void main(String[] args) {
