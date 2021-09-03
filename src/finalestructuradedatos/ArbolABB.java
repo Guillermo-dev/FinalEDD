@@ -39,7 +39,7 @@ public class ArbolABB {
     }
 
     public Nodo valorMinimo(Nodo nodoActual) {
-        if (nodoActual.getHi() == null) {
+        if (nodoActual.hiNoExist()) {
             return nodoActual;
         } else {
             nodoActual = nodoActual.getHi();
@@ -53,7 +53,7 @@ public class ArbolABB {
     }
 
     public Nodo valorMaximo(Nodo nodoActual) {
-        if (nodoActual.getHd() == null) {
+        if (nodoActual.hdNoExist()) {
             return nodoActual;
         } else {
             nodoActual = nodoActual.getHd();
@@ -90,13 +90,13 @@ public class ArbolABB {
 
     public static Nodo buscarPadreNuevoNodo(Nodo nodoActual, int dato) {
         if (nodoActual.getDato() > dato) {
-            if (nodoActual.getHi() == null) {
+            if (nodoActual.hiNoExist()) {
                 return nodoActual;
             } else {
                 return buscarPadreNuevoNodo(nodoActual.getHi(), dato);
             }
         } else {
-            if (nodoActual.getHd() == null) {
+            if (nodoActual.hdNoExist()) {
                 return nodoActual;
             } else {
                 return buscarPadreNuevoNodo(nodoActual.getHd(), dato);
@@ -127,9 +127,9 @@ public class ArbolABB {
         if (nodoActual.getDato() == dato) {
             return nodoActual;
         } else {
-            if (nodoActual.getHi() != null && nodoActual.getHi().getDato() == dato) {
+            if (nodoActual.hiExist() && nodoActual.getHi().getDato() == dato) {
                 return nodoActual;
-            } else if (nodoActual.getHd() != null && nodoActual.getHd().getDato() == dato) {
+            } else if (nodoActual.hdExist()&& nodoActual.getHd().getDato() == dato) {
                 return nodoActual;
             } else {
                 if (nodoActual.getDato() > dato) {
@@ -144,14 +144,14 @@ public class ArbolABB {
     }
 
     public void eliminarNodo(Nodo nodoAEliminar, Nodo nodoPadre) {
-        if (nodoAEliminar.getHi() == null && nodoAEliminar.getHd() == null) {
+        if (nodoAEliminar.hiNoExist() && nodoAEliminar.hdNoExist()) {
             if (nodoPadre.getDato() >= nodoAEliminar.getDato()) {//>= por elimincacion de raiz con predecesor
                 nodoPadre.setHi(null);
             } else if (nodoPadre.getDato() < nodoAEliminar.getDato()) {
                 nodoPadre.setHd(null);
             }
         } else {
-            if (nodoAEliminar.getHi() != null && nodoAEliminar.getHd() == null) {
+            if (nodoAEliminar.hiExist() && nodoAEliminar.hdNoExist()) {
                 if (nodoPadre.getDato() == nodoAEliminar.getDato()) {
                     nodoPadre = nodoPadre.getHi();
                 } else if (nodoPadre.getDato() > nodoAEliminar.getDato()) {
@@ -160,13 +160,13 @@ public class ArbolABB {
                     nodoPadre.setHd(nodoAEliminar.getHi());
                 }
             } else {
-                if (nodoAEliminar.getHi() == null && nodoAEliminar.getHd() != null) {
+                if (nodoAEliminar.hiNoExist() && nodoAEliminar.hdExist()) {
                     if (nodoPadre.getDato() == nodoAEliminar.getDato()) {
                         nodoPadre = nodoPadre.getHd();
                     } else if (nodoPadre.getDato() >= nodoAEliminar.getDato()) {
                         nodoPadre.setHi(nodoAEliminar.getHd());
                     } else if (nodoPadre.getDato() < nodoAEliminar.getDato()) {
-                        nodoPadre.setHd(nodoAEliminar.getHd()); 
+                        nodoPadre.setHd(nodoAEliminar.getHd());
                     }
                 } else {
                     Nodo nodoPredecesor = valorMinimo(nodoAEliminar);
@@ -184,7 +184,7 @@ public class ArbolABB {
         } else {
             Nodo nodoAEliminar = busqueda(this.getRaiz(), dato);
             Nodo nodoPadre = busquedaPadre(this.getRaiz(), dato);
-            if (nodoAEliminar == nodoPadre && nodoAEliminar.getHi() == null && nodoAEliminar.getHd() == null) {
+            if (nodoAEliminar == nodoPadre && nodoAEliminar.hiExist() && nodoAEliminar.hdNoExist()) {
                 setRaiz(null);
                 System.out.println("El nodo con la clave: " + dato + " se elimino con exito");
             } else {

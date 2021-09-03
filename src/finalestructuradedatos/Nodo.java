@@ -8,8 +8,8 @@ public class Nodo {
 
     //para usar en arbol avl
     private int fe;
-    
-    public Nodo (int dato){
+
+    public Nodo(int dato) {
         this.dato = dato;
     }
 
@@ -44,6 +44,20 @@ public class Nodo {
     public void setFe(int fe) {
         this.fe = fe;
     }
-    
-}
 
+    public boolean hiNoExist() {
+        return this.getHi() == null;
+    }
+
+    public boolean hdNoExist() {
+        return this.getHd() == null;
+    }
+
+    public boolean hiExist() {
+        return this.getHi() != null;
+    }
+
+    public boolean hdExist() {
+        return this.getHd() != null;
+    }
+}
