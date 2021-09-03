@@ -84,84 +84,30 @@ public class FinalEstructuraDeDatos {
     }
 
     public static void recorrerABB(ArbolABB arbolABB) {
-        if (arbolABB.raiz == null) {
-            System.out.println("El arbol esta vasio");
-        } else {
-            Nodo nodoActual = arbolABB.raiz;
-            System.out.print("Recorrido Inorden arbolABB: ");
-            recorridoInorden(nodoActual);
-            System.out.println("");
-        }
-    }
-
-    public static void recorridoInorden(Nodo nodoActual) {
-        if (nodoActual != null) {
-            recorridoInorden(nodoActual.hi);
-            System.out.print(nodoActual.dato + ", ");
-            recorridoInorden(nodoActual.hd);
-        }
+        arbolABB.recorrer();
     }
 
     public static void minimoABB(ArbolABB arbolABB) {
-        if (arbolABB.raiz == null) {
+        if (arbolABB.isEmpty()) {
             System.out.println("El arbol esta vacio");
         } else {
-            Nodo nodoMinimo = valorMinimo(arbolABB.raiz);
-            System.out.println("El valor minimo del arbol ABB es: " + nodoMinimo.dato);
-        }
-    }
-
-    public static Nodo valorMinimo(Nodo nodoActual) {
-        if (nodoActual.hi == null) {
-            return nodoActual;
-        } else {
-            nodoActual = nodoActual.hi;
-            return valorMinimo(nodoActual);
+            System.out.println("El valor minimo es: " + arbolABB.getMinimo());
         }
     }
 
     public static void maximoABB(ArbolABB arbolABB) {
-        if (arbolABB.raiz == null) {
+        if (arbolABB.isEmpty()) {
             System.out.println("El arbol esta vacio");
         } else {
-            Nodo nodoMayor = valorMaximo(arbolABB.raiz);
-            System.out.println("El valor maximo del arbol ABB es " + nodoMayor.dato);
-        }
-    }
-
-    public static Nodo valorMaximo(Nodo nodoActual) {
-        if (nodoActual.hd == null) {
-            return nodoActual;
-        } else {
-            nodoActual = nodoActual.hd;
-            return valorMaximo(nodoActual);
+            System.out.println("El valor maximo del arbol ABB es " + arbolABB.getMaximo());
         }
     }
 
     public static void busquedaABB(ArbolABB arbolABB, int dato) {
-        Nodo nodoActual = arbolABB.raiz;
-        if (seEncontro(nodoActual, dato)) {
+        if (arbolABB.buscar(dato)) {
             System.out.println("El dato: " + dato + " se encuentra en el arbol");
         } else {
             System.out.println("El dato " + dato + " NO se encuentra en el arbol");
-        }
-    }
-
-    public static boolean seEncontro(Nodo nodoActual, int dato) {
-        return (busqueda(nodoActual, dato) != null);
-    }
-
-    public static Nodo busqueda(Nodo nodoActual, int dato) {
-        if (nodoActual == null || nodoActual.dato == dato) {
-            return nodoActual;
-        } else {
-            if (nodoActual.dato > dato) {
-                nodoActual = nodoActual.hi;
-                return busqueda(nodoActual, dato);
-            } else {
-                nodoActual = nodoActual.hd;
-                return busqueda(nodoActual, dato);
-            }
         }
     }
 
@@ -1505,12 +1451,12 @@ public class FinalEstructuraDeDatos {
     }
 
     public static void eliminarMaestro(String nombreMaestro) {
-        if (!nombreMaestro.equals ("") && !nombreMaestro.equals ("Merge")) {
+        if (!nombreMaestro.equals("") && !nombreMaestro.equals("Merge")) {
             File maestro = new File(RUTA + nombreMaestro + ".dat");
             maestro.delete();
-            System.out.println ("El archivo " + nombreMaestro + " se elimino con exito");
-        }else{
-            System.out.println ("El archivo maestro no existe");
+            System.out.println("El archivo " + nombreMaestro + " se elimino con exito");
+        } else {
+            System.out.println("El archivo maestro no existe");
         }
     }
 
