@@ -229,87 +229,33 @@ public class FinalEstructuraDeDatos {
     }
 
     public static void recorrerB(ArbolB arbolB) {
-        if (arbolB.raiz == null) {
-            System.out.println("El arbol esta vacio");
-        } else if (arbolB.raiz.datos[0] == null) {
-            System.out.println("El arbol esta vacio");
-        } else {
-            NodoB nodoActual = arbolB.raiz;
-            System.out.print("Recorrido Inorden arbolB: ");
-            recorridoInordenB(nodoActual);
-            System.out.println("");
-        }
-    }
-
-    public static void recorridoInordenB(NodoB nodoActual) {
-        if (nodoActual != null) {
-            recorridoInordenB(nodoActual.hijos[0]);
-            int i = 0;
-            int j = 0;
-            while (nodoActual.datos[i] != null) {
-                System.out.print(nodoActual.datos[i].dato + ", ");
-                if (nodoActual.hijos[j + 1] != null) {
-                    recorridoInordenB(nodoActual.hijos[j + 1]);
-                    j++;
-                }
-                i++;
-            }
-
-        }
+        arbolB.recorrer();
     }
 
     public static void minimoB(ArbolB arbolB) {
-        if (arbolB.raiz == null) {
+        if (arbolB.isEmpty()) {
             System.out.println("El arbol esta vacio");
         } else {
-            NodoB nodoMinimo = valorMinimoB(arbolB.raiz);
-            System.out.println("El valor minimo del arbol B es: " + nodoMinimo.datos[0].dato);
-        }
-    }
-
-    public static NodoB valorMinimoB(NodoB nodoActual) {
-        if (nodoActual.hijos[0] == null) {
-            return nodoActual;
-        } else {
-            nodoActual = nodoActual.hijos[0];
-            return valorMinimoB(nodoActual);
+            System.out.println("El valor minimo del arbol B es: " + arbolB.getMinimo());
         }
     }
 
     public static void maximoB(ArbolB arbolB) {
-        if (arbolB.raiz == null) {
+        if (arbolB.isEmpty()) {
             System.out.println("El arbol esta vacio");
         } else {
-            NodoB nodoMaximo = valorMaximoB(arbolB.raiz);
-            int i = 0;
-            while (nodoMaximo.datos[i + 1] != null) {
-                i++;
-            }
-            System.out.println("El valor maximo del arbol B es: " + nodoMaximo.datos[i].dato);
+            System.out.println("El valor maximo del arbol B es: " + arbolB.getMaximo());
         }
-    }
-
-    public static NodoB valorMaximoB(NodoB nodoActual) {
-        for (int i = 4; i > 0; i--) {
-            if (nodoActual.hijos[i] != null) {
-                return valorMaximoB(nodoActual.hijos[i]);
-            }
-        }
-        return nodoActual;
     }
 
     public static void busquedaB(ArbolB arbolB, int dato) {
-        NodoB nodoActual = arbolB.raiz;
-        if (seEncontroB(nodoActual, dato)) {
+        if (arbolB.buscar(dato)) {
             System.out.println("El dato " + dato + " se encuentra en el arbol");
         } else {
             System.out.println("El dato " + dato + " NO se encuentra en el arbol");
         }
     }
 
-    public static boolean seEncontroB(NodoB nodoActual, int dato) {
-        return (busquedaB(nodoActual, dato) != null);
-    }
 
     public static NodoB busquedaB(NodoB nodoActual, int dato) {
         if (nodoActual == null) {

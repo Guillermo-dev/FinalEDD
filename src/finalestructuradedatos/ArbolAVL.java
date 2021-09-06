@@ -61,7 +61,7 @@ public class ArbolAVL extends ArbolBinario {
         }
     }
 
-    public void rsi(ArbolAVL arbolAVL, Nodo nodoPivote) {
+    public void rsi(Nodo nodoPivote) {
         Nodo hijoPivote;
         Nodo padrePivote;
 
@@ -81,7 +81,7 @@ public class ArbolAVL extends ArbolBinario {
 
     }
 
-    public void rsd(ArbolAVL arbolAVL, Nodo nodoPivote) {
+    public void rsd(Nodo nodoPivote) {
         Nodo hijoPivote;
         Nodo padrePivote;
 
@@ -100,31 +100,31 @@ public class ArbolAVL extends ArbolBinario {
         }
     }
 
-    public void hacerRotacion(ArbolAVL arbolAVL, Nodo nodoPivote) {
+    public void hacerRotacion(Nodo nodoPivote) {
         if (nodoPivote.getFe() > 1 && nodoPivote.getHd().getFe() >= 0) {//">=0" para cuadno elimina
-            rsi(arbolAVL, nodoPivote);
+            rsi(nodoPivote);
             System.out.println("RSI");
         } else if (nodoPivote.getFe() < 1 && nodoPivote.getHi().getFe() <= 0) {//"<=0" para cuadno elimina
-            rsd(arbolAVL, nodoPivote);
+            rsd(nodoPivote);
             System.out.println("RSD");
         } else if (nodoPivote.getFe() < 1 && nodoPivote.getHi().getFe() >= 1) {
-            rsi(arbolAVL, nodoPivote.getHi());
-            rsd(arbolAVL, nodoPivote);
+            rsi(nodoPivote.getHi());
+            rsd(nodoPivote);
             System.out.println("RDI");
         } else if (nodoPivote.getFe() > 1 && nodoPivote.getHd().getFe() <= 1) {
-            rsd(arbolAVL, nodoPivote.getHd());
-            rsi(arbolAVL, nodoPivote);
+            rsd(nodoPivote.getHd());
+            rsi(nodoPivote);
             System.out.println("RDD");
         }
     }
 
-    public void balanceo(ArbolAVL arbolAVL, Nodo nodoPivote, Bool estado) {
+    public void balanceo(Nodo nodoPivote, Bool estado) {
         System.out.println("Pivote: " + nodoPivote.getDato() + " ");
         calcularFE(this.getRaiz());
         System.out.println("RAIZ:" + this.getRaiz().getDato());
         estaDesvalanceado(this.getRaiz(), estado);
         if (estado.desbalanceado) {
-            hacerRotacion(arbolAVL, nodoPivote);
+            hacerRotacion(nodoPivote);
             calcularFE(this.getRaiz());
             System.out.println("RAIZ:" + this.getRaiz().getDato());
         } else {
@@ -148,7 +148,7 @@ public class ArbolAVL extends ArbolBinario {
                     nodoActual.setHd(nuevoNodo);
                 }
                 Nodo nodoPivote = buscarNodoPivote(this.getRaiz(), nuevoNodo.getDato());
-                balanceo(this, nodoPivote, estado);
+                balanceo(nodoPivote, estado);
 
             }
         } else {
@@ -171,7 +171,7 @@ public class ArbolAVL extends ArbolBinario {
                 eliminarNodo(nodoAEliminar, nodoPadre);
                 System.out.println("El nodo con la clave: " + dato + " se elimino con exito");
             }
-            balanceo(this, nodoPivote, estado);
+            balanceo(nodoPivote, estado);
         }
     }
 
