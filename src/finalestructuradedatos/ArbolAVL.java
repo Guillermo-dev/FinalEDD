@@ -62,16 +62,14 @@ public class ArbolAVL extends ArbolBinario {
     }
 
     public void rsi(Nodo nodoPivote) {
-        Nodo hijoPivote;
-        Nodo padrePivote;
-
-        hijoPivote = nodoPivote.getHd();
+        Nodo hijoPivote = nodoPivote.getHd();
+        
         nodoPivote.setHd(hijoPivote.getHi());
-        nodoPivote.setHi(hijoPivote);
+        hijoPivote.setHi(hijoPivote);
         if (this.getRaiz() == nodoPivote) {
             this.setRaiz(hijoPivote);
         } else {
-            padrePivote = busquedaPadre(this.getRaiz(), nodoPivote.getDato());
+            Nodo padrePivote = busquedaPadre(this.getRaiz(), nodoPivote.getDato());
             if (padrePivote.getHi() == nodoPivote) {
                 padrePivote.setHi(hijoPivote);
             } else {
@@ -82,16 +80,14 @@ public class ArbolAVL extends ArbolBinario {
     }
 
     public void rsd(Nodo nodoPivote) {
-        Nodo hijoPivote;
-        Nodo padrePivote;
-
-        hijoPivote = nodoPivote.getHi();
+        Nodo hijoPivote = nodoPivote.getHi();
+        
         nodoPivote.setHi(hijoPivote.getHd());
-        nodoPivote.setHd(hijoPivote);
+        hijoPivote.setHd(hijoPivote);
         if (this.getRaiz() == nodoPivote) {
             this.setRaiz(hijoPivote);
         } else {
-            padrePivote = busquedaPadre(this.getRaiz(), nodoPivote.getDato());
+            Nodo padrePivote = busquedaPadre(this.getRaiz(), nodoPivote.getDato());
             if (padrePivote.getHi() == nodoPivote) {
                 padrePivote.setHi(hijoPivote);
             } else {
@@ -149,7 +145,6 @@ public class ArbolAVL extends ArbolBinario {
                 }
                 Nodo nodoPivote = buscarNodoPivote(this.getRaiz(), nuevoNodo.getDato());
                 balanceo(nodoPivote, estado);
-
             }
         } else {
             System.out.println("Ese dato (" + dato + ") ya se encuentra en el arbol y los arboles AVL no permiten claves duplicadas");
