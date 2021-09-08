@@ -65,7 +65,7 @@ public class ArbolAVL extends ArbolBinario {
         Nodo hijoPivote = nodoPivote.getHd();
         
         nodoPivote.setHd(hijoPivote.getHi());
-        hijoPivote.setHi(hijoPivote);
+        hijoPivote.setHi(nodoPivote);
         if (this.getRaiz() == nodoPivote) {
             this.setRaiz(hijoPivote);
         } else {
@@ -81,9 +81,8 @@ public class ArbolAVL extends ArbolBinario {
 
     public void rsd(Nodo nodoPivote) {
         Nodo hijoPivote = nodoPivote.getHi();
-        
         nodoPivote.setHi(hijoPivote.getHd());
-        hijoPivote.setHd(hijoPivote);
+        hijoPivote.setHd(nodoPivote);
         if (this.getRaiz() == nodoPivote) {
             this.setRaiz(hijoPivote);
         } else {
