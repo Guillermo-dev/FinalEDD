@@ -149,7 +149,7 @@ public class ArbolBinario {
                 } else {
                     Nodo nodoPredecesor = valorMinimo(nodoAEliminar);
                     Nodo nodoPadrePredecesor = busquedaPadre(nodoAEliminar, nodoPredecesor.getDato());
-                    nodoAEliminar.setDato(nodoPredecesor.getFe());
+                    nodoAEliminar.setDato(nodoPredecesor.getDato());
                     eliminarNodo(nodoPredecesor, nodoPadrePredecesor);
                 }
             }
