@@ -23,20 +23,24 @@ public class NodoB {
     public void setDatos(Dato[] datos) {
         this.datos = datos;
     }
-    
-    public void setDato(int position, Dato dato){
+
+    public void setDato(int position, Dato dato) {
         this.datos[position] = dato;
     }
-    
-    public void setHijo(int position, NodoB hijo){
+
+    public void setHijo(int position, NodoB hijo) {
         this.hijos[position] = hijo;
     }
 
-    public boolean bucketIsEmpty(){
+    public boolean bucketIsEmpty() {
         return this.getDatos()[0] == null;
     }
-    
-    public boolean childsIsEmpty(){
+
+    public boolean childsIsEmpty() {
         return this.getHijos()[0] == null;
+    }
+
+    public boolean childsIsNoEmpty() {
+        return this.getHijos()[0] != null;
     }
 }

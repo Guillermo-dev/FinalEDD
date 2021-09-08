@@ -110,7 +110,7 @@ public class ArbolB {
     }
 
     public NodoB buscarNodoParaInsertar(NodoB nodoActual, int dato) {
-        if (nodoActual.childsIsEmpty()) {
+        if (nodoActual.childsIsNoEmpty()) {
             int i = 0;
             while (nodoActual.getDatos()[i] != null) {
                 if (nodoActual.getDatos()[i].getValue() > dato) {
@@ -235,7 +235,7 @@ public class ArbolB {
     }
 
     public boolean esNodoInterno(NodoB nodoActual) {
-        return (nodoActual.childsIsEmpty());
+        return (nodoActual.childsIsNoEmpty());
     }
 
     public int cantidadElementos(NodoB nodoActual) {
