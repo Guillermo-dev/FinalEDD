@@ -1,4 +1,4 @@
-package finalestructuradedatos;
+package finalestructuradedatos.arboles;
 
 public class NodoB {
 

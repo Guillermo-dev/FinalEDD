@@ -1,5 +1,9 @@
 package finalestructuradedatos;
 
+import finalestructuradedatos.arboles.ArbolB;
+import finalestructuradedatos.arboles.ArbolABB;
+import finalestructuradedatos.arboles.ArbolAVL;
+import finalestructuradedatos.archivos.Archivos;
 import java.util.Scanner;
 
 public class FinalEstructuraDeDatos {
@@ -31,7 +35,13 @@ public class FinalEstructuraDeDatos {
         do {
             menuArboles();
             System.out.println("Ingresar numero de operacion (7 para finalizar)");
-            respuesta = in.nextInt();
+            try {
+                respuesta = in.nextInt();
+            } catch (Exception e) {
+                respuesta = -1;
+                in.nextLine();
+            }
+
             switch (respuesta) {
                 case 1:
                     recorrerABB(arbolABB);
@@ -106,7 +116,12 @@ public class FinalEstructuraDeDatos {
         do {
             menuArboles();
             System.out.println("Ingresar numero de operacion (7 para finalizar)");
-            respuesta = in.nextInt();
+            try {
+                respuesta = in.nextInt();
+            } catch (Exception e) {
+                respuesta = -1;
+                in.nextLine();
+            }
             switch (respuesta) {
                 case 1:
                     recorrerAVL(arbolAVL);
@@ -181,7 +196,12 @@ public class FinalEstructuraDeDatos {
         do {
             menuArboles();
             System.out.println("Ingresar numero de operacion (7 para finalizar)");
-            respuesta = in.nextInt();
+            try {
+                respuesta = in.nextInt();
+            } catch (Exception e) {
+                respuesta = -1;
+                in.nextLine();
+            }
             switch (respuesta) {
                 case 1:
                     recorrerB(arbolB);
@@ -256,7 +276,12 @@ public class FinalEstructuraDeDatos {
         do {
             menu();
             System.out.println("Ingresar numero de operacion (5 para finalizar)");
-            respuesta = in.nextInt();
+            try {
+                respuesta = in.nextInt();
+            } catch (Exception e) {
+                respuesta = -1;
+                in.nextLine();
+            }
             switch (respuesta) {
                 case 1:
                     ArbolABB arbolABB = new ArbolABB();

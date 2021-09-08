@@ -1,4 +1,4 @@
-package finalestructuradedatos;
+package finalestructuradedatos.archivos;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,13 +33,17 @@ public class Archivos {
         int respuesta;
         String nombreMaestro = "";
         String nombreMaestro2 = "";
-        in.nextLine();
         int p;
 
         do {
             menuArchivos();
             System.out.println("Ingresar numero de operacion (7 para finalizar)");
-            respuesta = in.nextInt();
+            try {
+                respuesta = in.nextInt();
+            } catch (Exception e) {
+                respuesta = -1;
+                in.nextLine();
+            }
             switch (respuesta) {
                 case 1:
                     System.out.println("Ingresar el nombre que quiera que tenga el archivo");
@@ -74,7 +78,12 @@ public class Archivos {
                                 + "2)Generado por el merge \n"
                                 + "3)Ambos \n"
                                 + "4)Finalizar \n");
-                        p = in.nextInt();
+                        try {
+                            p = in.nextInt();
+                        } catch (Exception e) {
+                            p = -1;
+                            in.nextLine();
+                        }
                         switch (p) {
                             case 1:
                                 System.out.println("Seguro que quiere eliminar el archivo: " + nombreMaestro + " ? (S/N)");
