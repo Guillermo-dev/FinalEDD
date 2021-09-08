@@ -80,7 +80,7 @@ public class ArbolB {
         return nodoMaximo.getDatos()[i].getValue();
     }
 
-    public static NodoB busqueda(NodoB nodoActual, int dato) {
+    public NodoB busqueda(NodoB nodoActual, int dato) {
         if (nodoActual == null) {
             return nodoActual;
         }

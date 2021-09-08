@@ -85,7 +85,7 @@ public class ArbolBinario {
         return !(buscar(dato));
     }
 
-    public static Nodo buscarPadreNuevoNodo(Nodo nodoActual, int dato) {
+    public Nodo buscarPadreNuevoNodo(Nodo nodoActual, int dato) {
         if (nodoActual.getDato() > dato) {
             if (nodoActual.hiNoExist()) {
                 return nodoActual;
